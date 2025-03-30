@@ -9,3 +9,10 @@ SessionLocal = sessionmaker(autoflush=False, bind=engine)
 
 class Base(DeclarativeBase):
     pass
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db  # Usamos yield para devolver la conexión a la base de datos
+    finally:
+        db.close()  # Cerramos la sesión cuando terminemos

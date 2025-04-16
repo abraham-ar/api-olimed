@@ -1,4 +1,4 @@
-from sqlalchemy import Table, Column, Integer, String
+from sqlalchemy import Integer, String
 from sqlalchemy.orm import mapped_column
 from config.db import Base
 import passlib.hash as _hash

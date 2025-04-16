@@ -1,4 +1,4 @@
-from sqlalchemy import Table, Column, Integer, String
+from sqlalchemy import Table, Column, Integer, String, DATE
 from sqlalchemy.orm import mapped_column
 from config.db import engine, Base
 import passlib.hash as _hash
@@ -20,6 +20,7 @@ class CuentaPaciente(Base):
     #datos medicos
     tipo_sangre = mapped_column(String(30), nullable=True)
     alergias = mapped_column(String(200), nullable=True)
+    fecha_nacimiento = mapped_column(DATE, nullable=True)
 
     def verify_password(self, password: str):
         return _hash.bcrypt.verify(password, self.hashed_password)

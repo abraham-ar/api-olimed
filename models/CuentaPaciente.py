@@ -1,26 +1,28 @@
-from sqlalchemy import Table, Column, Integer, String, DATE
-from sqlalchemy.orm import mapped_column
+from sqlalchemy import String
+from sqlalchemy.orm import mapped_column, Mapped
 from config.db import engine, Base
 import passlib.hash as _hash
+from typing import Optional
+from datetime import date
 
 class CuentaPaciente(Base):
     __tablename__ = "CuentaPaciente"
     
-    idPaciente = mapped_column(Integer, primary_key=True, autoincrement=True)
+    idPaciente: Mapped[int] = mapped_column(primary_key=True)
 
     #datos de inicio de sesion
-    correo = mapped_column(String(100), unique=True)
-    hashed_password = mapped_column(String(100), nullable=False)
+    correo : Mapped[str]= mapped_column(String(100), unique=True, nullable=False)
+    hashed_password : Mapped[str] = mapped_column(String(100), nullable=False)
 
     #datos de contacto
-    nombre = mapped_column(String(100), nullable=False)
-    direccion = mapped_column(String(100), nullable=False)
-    telefono = mapped_column(String(20), nullable=False)
+    nombre : Mapped[str] = mapped_column(String(100), nullable=False)
+    direccion : Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    telefono : Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
 
     #datos medicos
-    tipo_sangre = mapped_column(String(30), nullable=True)
-    alergias = mapped_column(String(200), nullable=True)
-    fecha_nacimiento = mapped_column(DATE, nullable=True)
+    tipo_sangre : Mapped[Optional[str]] = mapped_column(String(30), nullable=True)
+    alergias : Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+    fecha_nacimiento : Mapped[date] = mapped_column(nullable=True)
 
     def verify_password(self, password: str):
         return _hash.bcrypt.verify(password, self.hashed_password)

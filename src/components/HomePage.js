@@ -43,7 +43,7 @@ function HomePage() {
       id: 3,
       type: "payment",
       content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vehicula auctor eros sed hendrerit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas tincidunt ex eget tincidunt sagittis",
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vehicula auctor eros sed hendrerit. "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vehicula auctor eros sed hendrerit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas tincidunt ex eget tincidunt sagittis',
     },
     {
       id: 4,
@@ -90,7 +90,7 @@ function HomePage() {
     </svg>
   )
 
-  const PaymentIcon = () => (
+  const FolderIcon = () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="24"
@@ -102,9 +102,7 @@ function HomePage() {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-      <circle cx="12" cy="14" r="2" />
-      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
     </svg>
   )
 
@@ -156,6 +154,24 @@ function HomePage() {
     }
   }
 
+  const PaymentIcon = () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <circle cx="12" cy="14" r="2" />
+      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+    </svg>
+  )
+
   return (
     <div className="home-container">
       {/* Header */}
@@ -186,19 +202,21 @@ function HomePage() {
         </div>
       </header>
 
+      <div className="divider-line"></div>
+
       <div className="content-wrapper">
         {/* Sidebar */}
         <aside className="sidebar">
           <div className="sidebar-item active">
             <BellIcon />
           </div>
-          <div className="sidebar-item">
+          <div className="sidebar-item" onClick={() => navigate("/calendar")}>
             <CalendarIcon />
           </div>
-          <div className="sidebar-item">
-            <PaymentIcon />
+          <div className="sidebar-item" onClick={() => navigate("/patients")}>
+            <FolderIcon />
           </div>
-          <div className="sidebar-item">
+          <div className="sidebar-item" onClick={() => navigate("/settings")}>
             <SettingsIcon />
           </div>
         </aside>
@@ -220,4 +238,3 @@ function HomePage() {
 }
 
 export default HomePage
-

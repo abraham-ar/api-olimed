@@ -4,3 +4,4 @@
 from .CuentaAdmin import CuentaAdmin
 from .CuentaRecepcionista import CuentaRecepcionista
 from .CuentaPaciente import CuentaPaciente
+from .Paciente_Telefono import Paciente_Telefono

@@ -1,9 +1,10 @@
 from sqlalchemy import String
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy.orm import mapped_column, Mapped, relationship
 from config.db import engine, Base
 import passlib.hash as _hash
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from datetime import date
+from models import Paciente_Telefono
 
 class CuentaPaciente(Base):
     __tablename__ = "CuentaPaciente"
@@ -17,7 +18,7 @@ class CuentaPaciente(Base):
     #datos de contacto
     nombre : Mapped[str] = mapped_column(String(100), nullable=False)
     direccion : Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    telefono : Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    telefonos : Mapped[Optional[list["Paciente_Telefono"]]] = relationship(back_populates="paciente", cascade="all, delete-orphan")
 
     #datos medicos
     tipo_sangre : Mapped[Optional[str]] = mapped_column(String(30), nullable=True)

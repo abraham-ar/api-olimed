@@ -31,10 +31,6 @@ function PatientPage() {
         phone1: "734 153 9607",
         phone2: "734 153 1000",
       },
-      medicalInfo: {
-        allergies: "",
-        bloodType: "O+",
-      },
       appointments: [
         {
           id: 1,
@@ -73,10 +69,6 @@ function PatientPage() {
         phone1: "777 123 4567",
         phone2: "",
       },
-      medicalInfo: {
-        allergies: "Penicilina",
-        bloodType: "A+",
-      },
       appointments: [
         {
           id: 1,
@@ -101,10 +93,6 @@ function PatientPage() {
         email: "daniela.sanchez@outlook.com",
         phone1: "777 987 6543",
         phone2: "777 456 7890",
-      },
-      medicalInfo: {
-        allergies: "Ninguna",
-        bloodType: "B-",
       },
       appointments: [
         {
@@ -241,23 +229,6 @@ function PatientPage() {
     </svg>
   )
 
-  const SettingsIcon = () => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  )
-
   const UserIcon = () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -365,9 +336,6 @@ function PatientPage() {
           <div className="sidebar-item active">
             <FolderIcon />
           </div>
-          <div className="sidebar-item" onClick={() => navigate("/settings")}>
-            <SettingsIcon />
-          </div>
         </aside>
 
         {/* Main Content */}
@@ -438,21 +406,7 @@ function PatientPage() {
                           </div>
                         </div>
 
-                        <h3>Información médica</h3>
-                        <div className="info-field">
-                          <label>Alergias:</label>
-                          <textarea value={patient.medicalInfo.allergies} readOnly />
-                        </div>
-                        <div className="info-field">
-                          <label>Tipo de sangre:</label>
-                          <input type="text" value={patient.medicalInfo.bloodType} readOnly />
-                        </div>
-
                         <div className="patient-actions">
-                          <button className="delete-button">Eliminar Paciente</button>
-                          <button className="history-button" onClick={showHistory}>
-                            Historial
-                          </button>
                           <button className="appointment-button" onClick={navigateToNewAppointment}>
                             Nueva cita <PlusIcon />
                           </button>

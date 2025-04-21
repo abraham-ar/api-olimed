@@ -11,7 +11,6 @@ function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [showNewAppointment, setShowNewAppointment] = useState(false)
-  const [showBlockDays, setShowBlockDays] = useState(false)
   const [appointments, setAppointments] = useState([
     {
       id: 1,
@@ -207,43 +206,6 @@ function CalendarPage() {
     })
   }
 
-  // Modificar la función para verificar si una hora ya está ocupada
-  const isTimeSlotBooked = (date, time) => {
-    const appointmentsForDate = getAppointmentsForDate(date)
-
-    // Normalizar el formato de tiempo para comparación
-    const normalizeTime = (timeStr) => {
-      // Convertir formatos como "1:00 pm" a "1:00 pm" para comparación consistente
-      if (!timeStr) return ""
-
-      // Si el tiempo ya tiene am/pm, normalizarlo a minúsculas
-      if (timeStr.toLowerCase().includes("am") || timeStr.toLowerCase().includes("pm")) {
-        return timeStr.toLowerCase()
-      }
-
-      // Si el tiempo está en formato 24h (como "13:00"), convertirlo a formato 12h
-      const [hours, minutes] = timeStr.split(":")
-      const hour = Number.parseInt(hours, 10)
-
-      if (hour > 12) {
-        return `${hour - 12}:${minutes} pm`
-      } else if (hour === 12) {
-        return `12:${minutes} pm`
-      } else if (hour === 0) {
-        return `12:${minutes} am`
-      } else {
-        return `${hour}:${minutes} am`
-      }
-    }
-
-    const normalizedTime = normalizeTime(time)
-
-    return appointmentsForDate.some((appointment) => {
-      const normalizedAppointmentTime = normalizeTime(appointment.time)
-      return normalizedAppointmentTime === normalizedTime
-    })
-  }
-
   // Get block for selected date
   const getBlockForDate = (date) => {
     return blockedDates.find((block) => {
@@ -257,7 +219,7 @@ function CalendarPage() {
     })
   }
 
-  // Añadir esta función para depuración
+  // Agregar una nueva función para verificar las citas y los horarios:
   const logAppointmentsAndTimes = (date) => {
     console.log("Fecha seleccionada:", format(date, "yyyy-MM-dd"))
     const appts = getAppointmentsForDate(date)
@@ -329,26 +291,6 @@ function CalendarPage() {
       time: "10:00",
     })
     setPatientSearchText("")
-  }
-
-  // Handle block days form submission
-  const handleBlockDaysSubmit = (e) => {
-    e.preventDefault()
-    const newBlockObj = {
-      id: blockedDates.length + 1,
-      ...blockDays,
-      reason: selectedReason,
-    }
-    setBlockedDates([...blockedDates, newBlockObj])
-    setShowBlockDays(false)
-    // Reset form
-    setBlockDays({
-      startDate: format(selectedDate, "yyyy-MM-dd"),
-      endDate: format(selectedDate, "yyyy-MM-dd"),
-      reason: "Vacaciones",
-      startTime: "09:00",
-      endTime: "18:00",
-    })
   }
 
   // Handle unblock confirmation
@@ -428,23 +370,6 @@ function CalendarPage() {
       strokeLinejoin="round"
     >
       <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
-    </svg>
-  )
-
-  const SettingsIcon = () => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-      <circle cx="12" cy="12" r="3" />
     </svg>
   )
 
@@ -589,6 +514,43 @@ function CalendarPage() {
     return new Date(year, month, 1).getDay()
   }
 
+  // Agregar una nueva función para verificar si una hora ya está ocupada
+  const isTimeSlotBooked = (date, time) => {
+    const appointmentsForDate = getAppointmentsForDate(date)
+
+    // Normalizar el formato de tiempo para comparación
+    const normalizeTime = (timeStr) => {
+      // Convertir formatos como "1:00 pm" a "1:00 pm" para comparación consistente
+      if (!timeStr) return ""
+
+      // Si el tiempo ya tiene am/pm, normalizarlo a minúsculas
+      if (timeStr.toLowerCase().includes("am") || timeStr.toLowerCase().includes("pm")) {
+        return timeStr.toLowerCase()
+      }
+
+      // Si el tiempo está en formato 24h (como "13:00"), convertirlo a formato 12h
+      const [hours, minutes] = timeStr.split(":")
+      const hour = Number.parseInt(hours, 10)
+
+      if (hour > 12) {
+        return `${hour - 12}:${minutes} pm`
+      } else if (hour === 12) {
+        return `12:${minutes} pm`
+      } else if (hour === 0) {
+        return `12:${minutes} am`
+      } else {
+        return `${hour}:${minutes} am`
+      }
+    }
+
+    const normalizedTime = normalizeTime(time)
+
+    return appointmentsForDate.some((appointment) => {
+      const normalizedAppointmentTime = normalizeTime(appointment.time)
+      return normalizedAppointmentTime === normalizedTime
+    })
+  }
+
   const year = currentDate.getFullYear()
   const month = currentDate.getMonth()
   const daysInMonth = getDaysInMonth(year, month)
@@ -653,9 +615,6 @@ function CalendarPage() {
   const renderCalendarActions = () => {
     return (
       <div className="calendar-actions">
-        <button className="action-button block-button" onClick={() => setShowBlockDays(true)}>
-          Bloquear días
-        </button>
         <button className="action-button new-button" onClick={() => setShowNewAppointment(true)}>
           Nueva cita <PlusIcon />
         </button>
@@ -704,9 +663,6 @@ function CalendarPage() {
           </div>
           <div className="sidebar-item" onClick={() => navigate("/patients")}>
             <FolderIcon />
-          </div>
-          <div className="sidebar-item" onClick={() => navigate("/settings")}>
-            <SettingsIcon />
           </div>
         </aside>
 
@@ -765,7 +721,6 @@ function CalendarPage() {
                       </button>
                     </div>
                     <div className="appointment-patient">{appointment.patient}</div>
-                    <button className="generate-recipe">Generar receta</button>
                   </div>
                 ))
               ) : (
@@ -927,189 +882,6 @@ function CalendarPage() {
         </div>
       )}
 
-      {/* Block Days Modal */}
-      {showBlockDays && (
-        <div className="modal-overlay">
-          <div className="modal-container">
-            <h2 className="modal-title">Bloquear Días</h2>
-            <form onSubmit={handleBlockDaysSubmit}>
-              <div className="form-group">
-                <label>Fecha Inicial</label>
-                <div className="input-with-icon">
-                  <input
-                    type="text"
-                    value={format(parseISO(blockDays.startDate), "dd/MM/yyyy")}
-                    readOnly
-                    onClick={() => setShowMiniCalendar(!showMiniCalendar)}
-                  />
-                  <div className="input-icons">
-                    <ChevronDownIcon onClick={() => setShowMiniCalendar(!showMiniCalendar)} />
-                  </div>
-                  {showMiniCalendar && (
-                    <div className="mini-calendar">
-                      <div className="mini-calendar-header">
-                        <button className="nav-button" onClick={prevMiniMonth}>
-                          <ChevronLeftIcon />
-                        </button>
-                        <span className="mini-calendar-month">
-                          {monthNames[miniCalendarDate.getMonth()]} {miniCalendarDate.getFullYear()}
-                        </span>
-                        <button className="nav-button" onClick={nextMiniMonth}>
-                          <ChevronRightIcon />
-                        </button>
-                      </div>
-                      <div className="mini-calendar-grid">
-                        {daysOfWeek.map((day) => (
-                          <div key={day} className="mini-day-name">
-                            {day.substring(0, 1)}
-                          </div>
-                        ))}
-                        {Array.from({
-                          length: getFirstDayOfMonth(miniCalendarDate.getFullYear(), miniCalendarDate.getMonth()),
-                        }).map((_, i) => (
-                          <div key={`empty-${i}`} className="mini-empty-day"></div>
-                        ))}
-                        {Array.from({
-                          length: getDaysInMonth(miniCalendarDate.getFullYear(), miniCalendarDate.getMonth()),
-                        }).map((_, i) => {
-                          const day = new Date(miniCalendarDate.getFullYear(), miniCalendarDate.getMonth(), i + 1)
-                          const isSelected = isSameDay(day, parseISO(blockDays.startDate))
-                          return (
-                            <div
-                              key={`day-${i}`}
-                              className={`mini-calendar-day ${isSelected ? "selected" : ""}`}
-                              onClick={() => {
-                                setBlockDays({
-                                  ...blockDays,
-                                  startDate: format(day, "yyyy-MM-dd"),
-                                })
-                                setShowMiniCalendar(false)
-                              }}
-                            >
-                              {i + 1}
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="form-group">
-                <label>Fecha Final</label>
-                <div className="input-with-icon">
-                  <input
-                    type="text"
-                    value={format(parseISO(blockDays.endDate), "dd/MM/yyyy")}
-                    readOnly
-                    onClick={() => setShowMiniCalendarEnd(!showMiniCalendarEnd)}
-                  />
-                  <div className="input-icons">
-                    <ChevronDownIcon onClick={() => setShowMiniCalendarEnd(!showMiniCalendarEnd)} />
-                  </div>
-                  {showMiniCalendarEnd && (
-                    <div className="mini-calendar">
-                      <div className="mini-calendar-header">
-                        <button className="nav-button" onClick={prevMiniMonthEnd}>
-                          <ChevronLeftIcon />
-                        </button>
-                        <span className="mini-calendar-month">
-                          {monthNames[miniCalendarEndDate.getMonth()]} {miniCalendarEndDate.getFullYear()}
-                        </span>
-                        <button className="nav-button" onClick={nextMiniMonthEnd}>
-                          <ChevronRightIcon />
-                        </button>
-                      </div>
-                      <div className="mini-calendar-grid">
-                        {daysOfWeek.map((day) => (
-                          <div key={day} className="mini-day-name">
-                            {day.substring(0, 1)}
-                          </div>
-                        ))}
-                        {Array.from({
-                          length: getFirstDayOfMonth(miniCalendarEndDate.getFullYear(), miniCalendarEndDate.getMonth()),
-                        }).map((_, i) => (
-                          <div key={`empty-${i}`} className="mini-empty-day"></div>
-                        ))}
-                        {Array.from({
-                          length: getDaysInMonth(miniCalendarEndDate.getFullYear(), miniCalendarEndDate.getMonth()),
-                        }).map((_, i) => {
-                          const day = new Date(miniCalendarEndDate.getFullYear(), miniCalendarEndDate.getMonth(), i + 1)
-                          const isSelected = isSameDay(day, parseISO(blockDays.endDate))
-                          return (
-                            <div
-                              key={`day-${i}`}
-                              className={`mini-calendar-day ${isSelected ? "selected" : ""}`}
-                              onClick={() => handleMiniCalendarEndDateClick(day)}
-                            >
-                              {i + 1}
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="form-group">
-                <label>Motivo</label>
-                <div className="input-with-icon">
-                  <input
-                    type="text"
-                    value={selectedReason}
-                    readOnly
-                    onClick={() => setShowReasonDropdown(!showReasonDropdown)}
-                  />
-                  <div className="input-icons">
-                    <ChevronDownIcon onClick={() => setShowReasonDropdown(!showReasonDropdown)} />
-                  </div>
-                  {showReasonDropdown && (
-                    <div className="dropdown-menu">
-                      {reasonOptions.map((reason, index) => (
-                        <div
-                          key={index}
-                          className="dropdown-item"
-                          onClick={() => {
-                            setSelectedReason(reason)
-                            setShowReasonDropdown(false)
-                          }}
-                        >
-                          {reason}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="form-group">
-                <label>Hora Inicial</label>
-                <input
-                  type="time"
-                  value={blockDays.startTime}
-                  onChange={(e) => setBlockDays({ ...blockDays, startTime: e.target.value })}
-                />
-              </div>
-              <div className="form-group">
-                <label>Hora Final</label>
-                <input
-                  type="time"
-                  value={blockDays.endTime}
-                  onChange={(e) => setBlockDays({ ...blockDays, endTime: e.target.value })}
-                />
-              </div>
-              <div className="modal-actions">
-                <button type="button" className="cancel-button" onClick={() => setShowBlockDays(false)}>
-                  Cancelar
-                </button>
-                <button type="submit" className="submit-button">
-                  Guardar
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
       {/* Unblock Modal */}
       {showUnblockModal && (
         <div className="modal-overlay">
@@ -1132,3 +904,4 @@ function CalendarPage() {
 }
 
 export default CalendarPage
+

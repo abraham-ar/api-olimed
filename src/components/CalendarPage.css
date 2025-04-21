@@ -477,6 +477,19 @@ body {
   border-bottom: none;
 }
 
+/* Estilo para horarios deshabilitados */
+.dropdown-item.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  text-decoration: line-through;
+  color: #999;
+}
+
+/* Asegurarse de que los horarios deshabilitados no cambien al pasar el mouse */
+.dropdown-item.disabled:hover {
+  background-color: inherit;
+}
+
 .modal-actions {
   display: flex;
   justify-content: space-between;

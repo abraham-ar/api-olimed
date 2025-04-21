@@ -216,9 +216,6 @@ function HomePage() {
           <div className="sidebar-item" onClick={() => navigate("/patients")}>
             <FolderIcon />
           </div>
-          <div className="sidebar-item" onClick={() => navigate("/settings")}>
-            <SettingsIcon />
-          </div>
         </aside>
 
         {/* Main Content */}

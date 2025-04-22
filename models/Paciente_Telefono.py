@@ -13,4 +13,4 @@ class Paciente_Telefono(Base):
     telefono: Mapped[str] = mapped_column(String(20), nullable=False)
     tipo: Mapped[str] = mapped_column(String(10), nullable=False)
 
-    paciente: Mapped["CuentaPaciente"] = relationship(back_populates="telefonos")
+    Paciente: Mapped["CuentaPaciente"] = relationship(back_populates="Telefonos")

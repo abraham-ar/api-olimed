@@ -14,7 +14,7 @@ class CuentaAdmin(Base):
     hashed_password : Mapped[str] = mapped_column(String(100), nullable=False)
 
     #notificaciones del Admin
-    Notificaciones: Mapped[List["Notificacion_Admin"]] = relationship(back_populates="Admin", cascade="all delete-orphan")
+    Notificaciones: Mapped[List["Notificacion_Admin"]] = relationship(back_populates="Admin", cascade="all, delete-orphan")
 
     #relacion con Cita, citas creadas por el medico
     Citas: Mapped[List["Cita"]] = relationship(back_populates="Medico")

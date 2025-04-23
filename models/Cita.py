@@ -15,7 +15,7 @@ class Cita(Base):
     idPaciente: Mapped[int] = mapped_column(ForeignKey("CuentaPaciente.idPaciente") ,nullable=False)
 
     #relación con la FechaDisponible
-    idFecha: Mapped[int] = mapped_column(ForeignKey("FechasDisponibles.idFecha"), nullable=False)
+    idFecha: Mapped[int] = mapped_column(ForeignKey("FechaDisponible.idFecha"), nullable=False)
 
     #relacion opcional, solo si quien crea la cita es medico o recepcionista
     idMedico: Mapped[Optional[int]] = mapped_column(ForeignKey("CuentaAdmin.idAdmin"), nullable=True)
@@ -30,7 +30,7 @@ class Cita(Base):
     #campos que permiten realizar operaciones JOIN usando ORM
     Paciente: Mapped["CuentaPaciente"] = relationship(back_populates="Citas")
     Fecha: Mapped["FechaDisponible"] = relationship(back_populates="Cita")
-    Receta: Mapped[Optional["Receta"]] = relationship(back_populates="Cita", cascade="all delete-orphan")
+    Receta: Mapped[Optional["Receta"]] = relationship(back_populates="Cita", cascade="all, delete-orphan")
 
     #campos de relación ORM opcionales
     Medico: Mapped[Optional["CuentaAdmin"]] = relationship(back_populates="Citas")

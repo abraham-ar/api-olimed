@@ -4,7 +4,7 @@ from config.db import engine, Base
 import passlib.hash as _hash
 from typing import Optional, List
 from datetime import date
-from models import Paciente_Telefono, Notificacion_Paciente, Cita
+from models import Paciente_Telefono, Notificacion_Paciente, Cita, Alergia
 
 class CuentaPaciente(Base):
     __tablename__ = "CuentaPaciente"
@@ -23,7 +23,7 @@ class CuentaPaciente(Base):
 
     #datos medicos
     tipo_sangre : Mapped[Optional[str]] = mapped_column(String(30), nullable=True)
-    alergias : Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+    Alergias : Mapped[List["Alergia"]] = relationship(back_populates="Paciente", cascade="all, delete-orphan")
     fecha_nacimiento : Mapped[date] = mapped_column(nullable=True)
 
     #notificaciones del paciente (permite operaciones entre 2 tablas)

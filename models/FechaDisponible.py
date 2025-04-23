@@ -5,8 +5,8 @@ from config.db import Base
 from typing import Optional
 from models import CuentaAdmin, Cita
 
-class FechasDisponibles(Base):
-    __tablename__ = "FechasDisponibles"
+class FechaDisponible(Base):
+    __tablename__ = "FechaDisponible"
 
     idFecha: Mapped[int] = mapped_column(primary_key=True)
 

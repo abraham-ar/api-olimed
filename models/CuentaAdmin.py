@@ -3,7 +3,7 @@ from sqlalchemy.orm import mapped_column, Mapped, relationship
 from config.db import Base
 import passlib.hash as _hash
 from typing import List
-from models import Cita, Notificacion_Admin, FechasDisponibles
+from models import Cita, Notificacion_Admin, FechaDisponible
   
 class CuentaAdmin(Base):
     __tablename__ = "CuentaAdmin"
@@ -20,7 +20,7 @@ class CuentaAdmin(Base):
     Citas: Mapped[List["Cita"]] = relationship(back_populates="Medico")
 
     #relacion con FechasDisponibles
-    Fechas: Mapped["FechasDisponibles"] = relationship(back_populates="Medico", cascade="all, delete-orphan")
+    Fechas: Mapped["FechaDisponible"] = relationship(back_populates="Medico", cascade="all, delete-orphan")
 
     def verify_password(self, password: str):
         return _hash.bcrypt.verify(password, self.hashed_password)

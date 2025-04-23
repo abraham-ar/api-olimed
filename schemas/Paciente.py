@@ -1,5 +1,7 @@
 from pydantic import BaseModel, EmailStr, SecretStr
 from datetime import date
+from typing import List
+from schemas import Alergia, Paciente_Telefono
 
 class _PacienteBase(BaseModel):
     #datos generales
@@ -13,9 +15,10 @@ class PacienteCreate(_PacienteBase): #datos de registro
 class Paciente(_PacienteBase):
     idPaciente: int
     tipo_sangre: str | None = None
-    alergias: str | None = None
+    alergias: List[Alergia] = []
     direccion: str | None = None
-    telefono: str | None = None
+    telefonos: List[Paciente_Telefono] = []
+
     class Config:
         orm_mode = True
         

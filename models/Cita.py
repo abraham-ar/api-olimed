@@ -4,7 +4,7 @@ from typing import Optional, List
 from datetime import datetime
 from models import CuentaPaciente
 from config.db import Base
-from models import CuentaAdmin, CuentaPaciente, CuentaRecepcionista, Cita_Sintoma, Receta, FechasDisponibles
+from models import CuentaAdmin, CuentaPaciente, CuentaRecepcionista, Cita_Sintoma, Receta, FechaDisponible
 
 class Cita(Base):
     __tablename__ = "Cita"
@@ -22,17 +22,17 @@ class Cita(Base):
     idRecepcionista: Mapped[Optional[int]] = mapped_column(ForeignKey("CuentaRecepcionista.idRecepcionista"), nullable=True)
 
     #información general de la cita
-    fecha: Mapped[datetime] = mapped_column(nullable=False)
+    #fecha: Mapped[datetime] = mapped_column(nullable=False) ESTO SE OBTIENE DE SU RELACION CON FECHADISPONIBLEs
     estado: Mapped[int] = mapped_column(nullable=False)
     #relacion con Cita_Sintoma
     Sintomas: Mapped[List["Cita_Sintoma"]] = relationship(back_populates="Cita", cascade="all, delete-orphan")
 
     #campos que permiten realizar operaciones JOIN usando ORM
     Paciente: Mapped["CuentaPaciente"] = relationship(back_populates="Citas")
-    Fecha: Mapped["FechasDisponibles"] = relationship(back_populates="Cita")
+    Fecha: Mapped["FechaDisponible"] = relationship(back_populates="Cita")
     Receta: Mapped[Optional["Receta"]] = relationship(back_populates="Cita", cascade="all delete-orphan")
 
-    #atributos opcionales
+    #campos de relación ORM opcionales
     Medico: Mapped[Optional["CuentaAdmin"]] = relationship(back_populates="Citas")
     Recepcionista: Mapped[Optional["CuentaRecepcionista"]] = relationship(back_populates="Citas")
     

@@ -6,10 +6,16 @@ import HomePage from "./components/HomePage"
 import CalendarPage from "./components/CalendarPage"
 import PatientPage from "./components/PatientPage"
 import SettingsPage from "./components/SettingsPage"
+import PrescriptionPage from "./components/PrescriptionPage"
 
 import HomePageRecep from "./components/HomePageRecep"
 import CalendarPageRecep from "./components/CalendarPageRecep"
 import PatientPageRecep from "./components/PatientPageRecep"
+
+import HomePagePatient from "./components/HomePagePatient"
+import CalendarPagePatient from "./components/CalendarPagePatient"
+import PatientPagePatient from "./components/PatientPagePatient"
+import SettingsPagePatient from "./components/SettingsPagePatient"
 
 import "./App.css"
 
@@ -17,20 +23,27 @@ function App() {
   const userRole = localStorage.getItem("userRole")
 
   const getHomeComponent = () => {
-    if (userRole === "recepcionista") return <HomePageRecep />
-    return <HomePage />
+    if (userRole === "recepcionista") return <HomePageRecep />;
+    else if (userRole === "paciente") return <HomePagePatient />;
+    return <HomePage />;
   }
 
   const getCalendarComponent = () => {
     if (userRole === "recepcionista") return <CalendarPageRecep />
+    else if (userRole === "paciente") return <CalendarPagePatient />;
     return <CalendarPage />
   }
 
   const getPatientComponent = () => {
     if (userRole === "recepcionista") return <PatientPageRecep />
+    else if (userRole === "paciente") return <PatientPagePatient />;
     return <PatientPage />
   }
 
+  const getSettingComponent = () => {
+    if (userRole === "paciente") return <SettingsPagePatient />;
+    return <SettingsPage />
+  }
   return (
     <Router>
       <Routes>
@@ -40,7 +53,8 @@ function App() {
         <Route path="/home" element={getHomeComponent()} />
         <Route path="/calendar" element={getCalendarComponent()} />
         <Route path="/patients" element={getPatientComponent()} />
-        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/settings" element={getSettingComponent()} />
+        <Route path="/prescription" element={<PrescriptionPage />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>

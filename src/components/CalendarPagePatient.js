@@ -15,13 +15,11 @@ function CalendarPage() {
   const [appointments, setAppointments] = useState([
     {
       id: 1,
-      patient: "María López",
       date: format(new Date(), "yyyy-MM-dd"),
       time: "10:00",
     },
     {
       id: 2,
-      patient: "Andrei Martinez Bahena",
       date: format(addDays(new Date(), 1), "yyyy-MM-dd"),
       time: "1:00 pm",
     },
@@ -52,32 +50,9 @@ function CalendarPage() {
         })
       }
 
-      // Si un paciente ID fue pasado, pre-seleccionar ese paciente
-      if (location.state.patientId) {
-        const patientName = getPatientNameById(location.state.patientId)
-        setPatientSearchText(patientName)
-        setNewAppointment({
-          ...newAppointment,
-          patient: patientName,
-        })
-      }
     }
   }, [location.state])
 
-  // Sample patient data - this would normally come from an API
-  const patientList = [
-    { id: 1, name: "Andrei Martinez Bahena" },
-    { id: 2, name: "Aranza Castañeda Juarez" },
-    { id: 3, name: "Daniela Zayuri Sanchez Gomez" },
-    { id: 4, name: "Carlos Rodriguez Perez" },
-    { id: 5, name: "Maria Fernanda Lopez" },
-  ]
-
-  // Function to get patient name by ID
-  const getPatientNameById = (id) => {
-    const patient = patientList.find((p) => p.id === id)
-    return patient ? patient.name : ""
-  }
 
   // Dropdown states
   const [showTimeDropdown, setShowTimeDropdown] = useState(false)
@@ -113,11 +88,6 @@ function CalendarPage() {
     endTime: "18:00",
   })
 
-  // Filtered patients based on search
-  const filteredPatients = patientList
-    .filter((patient) => patient.name.toLowerCase().includes(patientSearchText.toLowerCase()))
-    .map((patient) => patient.name)
-
   // Time options
   const timeOptions = [
     "8:00 am",
@@ -142,9 +112,7 @@ function CalendarPage() {
     "5:30 pm",
   ]
 
-  // Reason options
-  const reasonOptions = ["Vacaciones", "Día festivo", "Capacitación", "Mantenimiento", "Otro"]
-
+  
   // Navigate to previous month
   const prevMonth = () => {
     setCurrentDate(subMonths(currentDate, 1))
@@ -302,16 +270,6 @@ function CalendarPage() {
     setShowMiniCalendarEnd(false)
   }
 
-  // Handle patient selection
-  const handlePatientSelect = (patient) => {
-    setNewAppointment({
-      ...newAppointment,
-      patient,
-    })
-    setPatientSearchText(patient)
-    setShowPatientDropdown(false)
-  }
-
   // Handle new appointment form submission
   const handleNewAppointmentSubmit = (e) => {
     e.preventDefault()
@@ -324,32 +282,11 @@ function CalendarPage() {
     setShowNewAppointment(false)
     // Reset form
     setNewAppointment({
-      patient: "",
       date: format(selectedDate, "yyyy-MM-dd"),
       time: "10:00",
     })
-    setPatientSearchText("")
   }
 
-  // Handle block days form submission
-  const handleBlockDaysSubmit = (e) => {
-    e.preventDefault()
-    const newBlockObj = {
-      id: blockedDates.length + 1,
-      ...blockDays,
-      reason: selectedReason,
-    }
-    setBlockedDates([...blockedDates, newBlockObj])
-    setShowBlockDays(false)
-    // Reset form
-    setBlockDays({
-      startDate: format(selectedDate, "yyyy-MM-dd"),
-      endDate: format(selectedDate, "yyyy-MM-dd"),
-      reason: "Vacaciones",
-      startTime: "09:00",
-      endTime: "18:00",
-    })
-  }
 
   // Handle unblock confirmation
   const handleUnblock = () => {
@@ -653,9 +590,6 @@ function CalendarPage() {
   const renderCalendarActions = () => {
     return (
       <div className="calendar-actions">
-        <button className="action-button block-button" onClick={() => setShowBlockDays(true)}>
-          Bloquear días
-        </button>
         <button className="action-button new-button" onClick={() => setShowNewAppointment(true)}>
           Nueva cita <PlusIcon />
         </button>
@@ -673,7 +607,7 @@ function CalendarPage() {
           </div>
         </div>
         <div className="banner">
-          <span className="banner-text">Para tu salud</span>
+          <span className="banner-text">Para tu salud uhfcgj</span>
         </div>
         <div className="profile-container">
           <div className="profile-circle" onClick={toggleDropdown}>
@@ -684,11 +618,11 @@ function CalendarPage() {
               <button onClick={handleLogout} className="dropdown-item">
                 Cerrar sesión
               </button>
+              <button className="dropdown-item">Eliminar cuenta</button>
+              <div className="dropdown-divider"></div>
             </div>
           )}
         </div>
-        
-
       </header>
 
       <div className="divider-line"></div>
@@ -751,7 +685,7 @@ function CalendarPage() {
 
             {renderCalendarActions()}
           </div>
-
+          
           <div className="appointments-panel">
             {renderAppointmentsHeader()}
             <div className="appointments-content">
@@ -765,29 +699,6 @@ function CalendarPage() {
                       </button>
                     </div>
                     <div className="appointment-patient">{appointment.patient}</div>
-                    <button
-                      className="generate-recipe"
-                      onClick={() => {
-                        // Find the patient by name
-                        const patient = patientList.find((p) => p.name === appointment.patient) || {
-                          id: 0,
-                          name: appointment.patient,
-                          age: "",
-                        }
-
-                        // Navigate to prescription page with patient data
-                        navigate("/prescription", {
-                          state: {
-                            patient: patient,
-                            appointmentDate: appointment.date,
-                            appointmentTime: appointment.time,
-                            returnTo: "calendar",
-                          },
-                        })
-                      }}
-                    >
-                      Generar receta
-                    </button>
                   </div>
                 ))
               ) : (
@@ -804,38 +715,6 @@ function CalendarPage() {
           <div className="modal-container">
             <h2 className="modal-title">Generar Cita</h2>
             <form onSubmit={handleNewAppointmentSubmit}>
-              <div className="form-group">
-                <label>Paciente</label>
-                <div className="input-with-icon">
-                  <input
-                    type="text"
-                    value={patientSearchText}
-                    onChange={(e) => {
-                      setPatientSearchText(e.target.value)
-                      setShowPatientDropdown(true)
-                    }}
-                    placeholder="Buscar paciente"
-                    onClick={() => setShowPatientDropdown(true)}
-                  />
-                  <div className="input-icons">
-                    <SearchIcon />
-                    <ChevronDownIcon onClick={() => setShowPatientDropdown(!showPatientDropdown)} />
-                  </div>
-                  {showPatientDropdown && (
-                    <div className="dropdown-menu">
-                      {filteredPatients.length > 0 ? (
-                        filteredPatients.map((patient, index) => (
-                          <div key={index} className="dropdown-item" onClick={() => handlePatientSelect(patient)}>
-                            {patient}
-                          </div>
-                        ))
-                      ) : (
-                        <div className="dropdown-item">No se encontraron pacientes</div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
               <div className="form-group">
                 <label>Fecha</label>
                 <div className="input-with-icon">
@@ -936,6 +815,12 @@ function CalendarPage() {
                   )}
                 </div>
               </div>
+              <div className="form-group">
+                <label>Sintomas</label>
+                <div className="input-with-icon">
+                  <input type="text" />                                    
+                </div>
+              </div>
               <div className="modal-actions">
                 <button type="button" className="cancel-button" onClick={() => setShowNewAppointment(false)}>
                   Cancelar
@@ -949,206 +834,6 @@ function CalendarPage() {
         </div>
       )}
 
-      {/* Block Days Modal */}
-      {showBlockDays && (
-        <div className="modal-overlay">
-          <div className="modal-container">
-            <h2 className="modal-title">Bloquear Días</h2>
-            <form onSubmit={handleBlockDaysSubmit}>
-              <div className="form-group">
-                <label>Fecha Inicial</label>
-                <div className="input-with-icon">
-                  <input
-                    type="text"
-                    value={format(parseISO(blockDays.startDate), "dd/MM/yyyy")}
-                    readOnly
-                    onClick={() => setShowMiniCalendar(!showMiniCalendar)}
-                  />
-                  <div className="input-icons">
-                    <ChevronDownIcon onClick={() => setShowMiniCalendar(!showMiniCalendar)} />
-                  </div>
-                  {showMiniCalendar && (
-                    <div className="mini-calendar">
-                      <div className="mini-calendar-header">
-                        <button className="nav-button" onClick={prevMiniMonth}>
-                          <ChevronLeftIcon />
-                        </button>
-                        <span className="mini-calendar-month">
-                          {monthNames[miniCalendarDate.getMonth()]} {miniCalendarDate.getFullYear()}
-                        </span>
-                        <button className="nav-button" onClick={nextMiniMonth}>
-                          <ChevronRightIcon />
-                        </button>
-                      </div>
-                      <div className="mini-calendar-grid">
-                        {daysOfWeek.map((day) => (
-                          <div key={day} className="mini-day-name">
-                            {day.substring(0, 1)}
-                          </div>
-                        ))}
-                        {Array.from({
-                          length: getFirstDayOfMonth(miniCalendarDate.getFullYear(), miniCalendarDate.getMonth()),
-                        }).map((_, i) => (
-                          <div key={`empty-${i}`} className="mini-empty-day"></div>
-                        ))}
-                        {Array.from({
-                          length: getDaysInMonth(miniCalendarDate.getFullYear(), miniCalendarDate.getMonth()),
-                        }).map((_, i) => {
-                          const day = new Date(miniCalendarDate.getFullYear(), miniCalendarDate.getMonth(), i + 1)
-                          const isSelected = isSameDay(day, parseISO(blockDays.startDate))
-                          return (
-                            <div
-                              key={`day-${i}`}
-                              className={`mini-calendar-day ${isSelected ? "selected" : ""}`}
-                              onClick={() => {
-                                setBlockDays({
-                                  ...blockDays,
-                                  startDate: format(day, "yyyy-MM-dd"),
-                                })
-                                setShowMiniCalendar(false)
-                              }}
-                            >
-                              {i + 1}
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="form-group">
-                <label>Fecha Final</label>
-                <div className="input-with-icon">
-                  <input
-                    type="text"
-                    value={format(parseISO(blockDays.endDate), "dd/MM/yyyy")}
-                    readOnly
-                    onClick={() => setShowMiniCalendarEnd(!showMiniCalendarEnd)}
-                  />
-                  <div className="input-icons">
-                    <ChevronDownIcon onClick={() => setShowMiniCalendarEnd(!showMiniCalendarEnd)} />
-                  </div>
-                  {showMiniCalendarEnd && (
-                    <div className="mini-calendar">
-                      <div className="mini-calendar-header">
-                        <button className="nav-button" onClick={prevMiniMonthEnd}>
-                          <ChevronLeftIcon />
-                        </button>
-                        <span className="mini-calendar-month">
-                          {monthNames[miniCalendarEndDate.getMonth()]} {miniCalendarEndDate.getFullYear()}
-                        </span>
-                        <button className="nav-button" onClick={nextMiniMonthEnd}>
-                          <ChevronRightIcon />
-                        </button>
-                      </div>
-                      <div className="mini-calendar-grid">
-                        {daysOfWeek.map((day) => (
-                          <div key={day} className="mini-day-name">
-                            {day.substring(0, 1)}
-                          </div>
-                        ))}
-                        {Array.from({
-                          length: getFirstDayOfMonth(miniCalendarEndDate.getFullYear(), miniCalendarEndDate.getMonth()),
-                        }).map((_, i) => (
-                          <div key={`empty-${i}`} className="mini-empty-day"></div>
-                        ))}
-                        {Array.from({
-                          length: getDaysInMonth(miniCalendarEndDate.getFullYear(), miniCalendarEndDate.getMonth()),
-                        }).map((_, i) => {
-                          const day = new Date(miniCalendarEndDate.getFullYear(), miniCalendarEndDate.getMonth(), i + 1)
-                          const isSelected = isSameDay(day, parseISO(blockDays.endDate))
-                          return (
-                            <div
-                              key={`day-${i}`}
-                              className={`mini-calendar-day ${isSelected ? "selected" : ""}`}
-                              onClick={() => handleMiniCalendarEndDateClick(day)}
-                            >
-                              {i + 1}
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="form-group">
-                <label>Motivo</label>
-                <div className="input-with-icon">
-                  <input
-                    type="text"
-                    value={selectedReason}
-                    readOnly
-                    onClick={() => setShowReasonDropdown(!showReasonDropdown)}
-                  />
-                  <div className="input-icons">
-                    <ChevronDownIcon onClick={() => setShowReasonDropdown(!showReasonDropdown)} />
-                  </div>
-                  {showReasonDropdown && (
-                    <div className="dropdown-menu">
-                      {reasonOptions.map((reason, index) => (
-                        <div
-                          key={index}
-                          className="dropdown-item"
-                          onClick={() => {
-                            setSelectedReason(reason)
-                            setShowReasonDropdown(false)
-                          }}
-                        >
-                          {reason}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="form-group">
-                <label>Hora Inicial</label>
-                <input
-                  type="time"
-                  value={blockDays.startTime}
-                  onChange={(e) => setBlockDays({ ...blockDays, startTime: e.target.value })}
-                />
-              </div>
-              <div className="form-group">
-                <label>Hora Final</label>
-                <input
-                  type="time"
-                  value={blockDays.endTime}
-                  onChange={(e) => setBlockDays({ ...blockDays, endTime: e.target.value })}
-                />
-              </div>
-              <div className="modal-actions">
-                <button type="button" className="cancel-button" onClick={() => setShowBlockDays(false)}>
-                  Cancelar
-                </button>
-                <button type="submit" className="submit-button">
-                  Guardar
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Unblock Modal */}
-      {showUnblockModal && (
-        <div className="modal-overlay">
-          <div className="modal-container">
-            <h2 className="modal-title">Desbloquear Día</h2>
-            <p>¿Estás seguro que deseas desbloquear este día?</p>
-            <div className="modal-actions">
-              <button type="button" className="cancel-button" onClick={() => setShowUnblockModal(false)}>
-                Cancelar
-              </button>
-              <button type="button" className="submit-button" onClick={handleUnblock}>
-                Desbloquear
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

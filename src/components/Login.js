@@ -20,7 +20,9 @@ function Login() {
       role = "medico"
     } else if (clave === "Recep456") {
       role = "recepcionista"
-    } else {
+    } else if (clave === "Patient") {
+      role = "paciente"
+    }else {
       alert("Clave incorrecta. Intenta con una clave válida.")
       return
     }

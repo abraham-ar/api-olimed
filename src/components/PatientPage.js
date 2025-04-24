@@ -13,7 +13,13 @@ function PatientPage() {
   const [expandedAppointment, setExpandedAppointment] = useState(null)
   const [selectedPatient, setSelectedPatient] = useState(null)
   const [selectedAppointment, setSelectedAppointment] = useState(null)
+  const [expandedPrescription, setExpandedPrescription] = useState(null)
 
+  // Load prescriptions from localStorage
+  const loadPrescriptions = () => {
+    const storedPrescriptions = JSON.parse(localStorage.getItem("prescriptions") || "[]")
+    return storedPrescriptions
+  }
   // Sample patient data
   const patients = [
     {
@@ -148,6 +154,15 @@ function PatientPage() {
       setExpandedAppointment(appointmentId)
       const appointment = selectedPatient.appointments.find((a) => a.id === appointmentId)
       setSelectedAppointment(appointment)
+    }
+  }
+
+  // Toggle prescription expansion
+  const togglePrescription = (prescriptionId) => {
+    if (expandedPrescription === prescriptionId) {
+      setExpandedPrescription(null)
+    } else {
+      setExpandedPrescription(prescriptionId)
     }
   }
 
@@ -500,6 +515,38 @@ function PatientPage() {
                               )}
                             </div>
                           ))}
+                          {/* Display prescriptions in patient history */}
+                          {loadPrescriptions()
+                            .filter((prescription) => prescription.patientId === patient.id)
+                            .map((prescription) => (
+                              <div key={`prescription-${prescription.id}`} className="appointment-item">
+                                <div className="appointment-header" onClick={() => togglePrescription(prescription.id)}>
+                                  <span className="appointment-date">{prescription.date} - Receta</span>
+                                  <button className="toggle-button">
+                                    {expandedPrescription === prescription.id ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                                  </button>
+                                </div>
+
+                                {expandedPrescription === prescription.id && (
+                                  <div className="appointment-details">
+                                    <div className="medical-section">
+                                      <h3>Síntomas:</h3>
+                                      <div className="medical-text">{prescription.symptoms}</div>
+                                    </div>
+
+                                    <div className="medical-section">
+                                      <h3>Diagnóstico:</h3>
+                                      <div className="medical-text">{prescription.diagnosis}</div>
+                                    </div>
+
+                                    <div className="medical-section">
+                                      <h3>Tratamiento</h3>
+                                      <div className="medical-text">{prescription.treatment}</div>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
                         </div>
                       </div>
                     )}

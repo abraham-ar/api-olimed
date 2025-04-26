@@ -168,7 +168,7 @@ function PrescriptionPage() {
       <header className="home-header">
         <div className="logo-container">
           <div className="logo-circle">
-            <span>logo</span>
+          <img src="/logo.jpg" alt="Logo"/>
           </div>
         </div>
         <div className="banner">

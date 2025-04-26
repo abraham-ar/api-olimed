@@ -26,16 +26,18 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  border: 2px solid #0c3b5e;
+  overflow: hidden; /* <-- AGREGADO para que el logo quede recortado circular */
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: white;
 }
 
-.logo-circle span {
-  font-weight: bold;
-  color: #0c3b5e;
+/* Nueva clase para el logo imagen */
+.logo-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .banner {
@@ -52,6 +54,7 @@
   background-size: cover;
   background-position: center;
 }
+
 
 .banner-text {
   font-family: "Brush Script MT", cursive;

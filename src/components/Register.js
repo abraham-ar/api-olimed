@@ -71,7 +71,7 @@ function Register() {
               {/* Logo on the right side */}
               <div className="register-logo">
                 <div className="logo-circle">
-                  <h1 className="logo-text">LOGO</h1>
+                <img src="/logo.jpg" alt="Logo" />
                 </div>
               </div>
             </div>

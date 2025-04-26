@@ -50,9 +50,9 @@ function Login() {
   return (
     <div className="auth-container">
       <div className="auth-wrapper">
-        <div className="logo-section">
+      <div className="logo-section login-logo">
           <div className="logo-circle">
-            <h1 className="logo-text">LOGO</h1>
+          <img src="/logo.jpg" alt="Logo"/>
           </div>
         </div>
 

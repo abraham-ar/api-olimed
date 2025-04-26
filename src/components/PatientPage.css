@@ -19,41 +19,44 @@ body {
   background-color: #f0f4f8;
 }
 
-/* Header styles */
+/* Header Styles */
 .home-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 1rem;
   background-color: #f0f4f8;
+  border-bottom: 1px solid #d1d5db;
 }
 
 .logo-container {
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .logo-circle {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  border: 2px solid #0c3b5e;
+  overflow: hidden; /* <-- AGREGADO para que el logo quede recortado circular */
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: white;
 }
 
-.logo-text {
-  font-weight: bold;
-  color: #0c3b5e;
-  font-size: 1.2rem;
+/* Nueva clase para el logo imagen */
+.logo-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .banner {
   flex: 1;
-  height: 80px;
+  height: 60px;
   background-color: #e2e8f0;
   border-radius: 10px;
   display: flex;

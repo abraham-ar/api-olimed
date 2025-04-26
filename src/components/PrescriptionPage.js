@@ -16,6 +16,16 @@ function PrescriptionPage() {
     diagnosis: "",
     treatment: "",
     date: new Date().toISOString().split("T")[0],
+    // New fields
+    fc: "",
+    fr: "",
+    temp: "",
+    satOxg: "",
+    ta: "",
+    pes: "",
+    fecha: new Date().toISOString().split("T")[0],
+    talla: "",
+    alergias: "",
   })
 
   // Load patient data from location state
@@ -200,40 +210,140 @@ function PrescriptionPage() {
         </aside>
 
         {/* Main Content */}
-        <main className="main-content prescription-content">
+        <main className="main-content">
           <div className="prescription-container">
-            <h1>Datos de la receta</h1>
-            <div className="patient-info">
+            <h1 className="prescription-title">Datos de la receta</h1>
+
+            <div className="patient-info-card">
               <h2>{prescription.patientName}</h2>
               <p>Edad: {prescription.patientAge}</p>
             </div>
 
             <form onSubmit={handleSubmit}>
-              <div className="prescription-form-group">
-                <label>Síntomas:</label>
-                <textarea
-                  value={prescription.symptoms}
-                  onChange={(e) => setPrescription({ ...prescription, symptoms: e.target.value })}
-                  required
-                ></textarea>
+              {/* Vital signs and measurements section */}
+              <div className="prescription-section">
+                <h3 className="section-title">Signos vitales y medidas</h3>
+
+                <div className="prescription-grid">
+                  <div className="prescription-form-group small">
+                    <label>FC:</label>
+                    <input
+                      type="text"
+                      value={prescription.fc}
+                      onChange={(e) => setPrescription({ ...prescription, fc: e.target.value })}
+                      placeholder="Frecuencia Cardíaca"
+                    />
+                  </div>
+
+                  <div className="prescription-form-group small">
+                    <label>FR:</label>
+                    <input
+                      type="text"
+                      value={prescription.fr}
+                      onChange={(e) => setPrescription({ ...prescription, fr: e.target.value })}
+                      placeholder="Frecuencia Respiratoria"
+                    />
+                  </div>
+
+                  <div className="prescription-form-group small">
+                    <label>TEMP:</label>
+                    <input
+                      type="text"
+                      value={prescription.temp}
+                      onChange={(e) => setPrescription({ ...prescription, temp: e.target.value })}
+                      placeholder="Temperatura"
+                    />
+                  </div>
+
+                  <div className="prescription-form-group small">
+                    <label>SAT/OXG:</label>
+                    <input
+                      type="text"
+                      value={prescription.satOxg}
+                      onChange={(e) => setPrescription({ ...prescription, satOxg: e.target.value })}
+                      placeholder="Saturación de Oxígeno"
+                    />
+                  </div>
+
+                  <div className="prescription-form-group small">
+                    <label>T/A:</label>
+                    <input
+                      type="text"
+                      value={prescription.ta}
+                      onChange={(e) => setPrescription({ ...prescription, ta: e.target.value })}
+                      placeholder="Tensión Arterial"
+                    />
+                  </div>
+
+                  <div className="prescription-form-group small">
+                    <label>PES:</label>
+                    <input
+                      type="text"
+                      value={prescription.pes}
+                      onChange={(e) => setPrescription({ ...prescription, pes: e.target.value })}
+                      placeholder="Peso"
+                    />
+                  </div>
+
+                  <div className="prescription-form-group small">
+                    <label>FECHA:</label>
+                    <input
+                      type="date"
+                      value={prescription.fecha}
+                      onChange={(e) => setPrescription({ ...prescription, fecha: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="prescription-form-group small">
+                    <label>TALLA:</label>
+                    <input
+                      type="text"
+                      value={prescription.talla}
+                      onChange={(e) => setPrescription({ ...prescription, talla: e.target.value })}
+                      placeholder="Altura"
+                    />
+                  </div>
+                </div>
               </div>
 
-              <div className="prescription-form-group">
-                <label>Diagnostico:</label>
-                <textarea
-                  value={prescription.diagnosis}
-                  onChange={(e) => setPrescription({ ...prescription, diagnosis: e.target.value })}
-                  required
-                ></textarea>
-              </div>
+              <div className="prescription-section">
+                <h3 className="section-title">Información médica</h3>
 
-              <div className="prescription-form-group">
-                <label>Tratamiento</label>
-                <textarea
-                  value={prescription.treatment}
-                  onChange={(e) => setPrescription({ ...prescription, treatment: e.target.value })}
-                  required
-                ></textarea>
+                <div className="prescription-form-group">
+                  <label>ALERGIAS:</label>
+                  <textarea
+                    value={prescription.alergias}
+                    onChange={(e) => setPrescription({ ...prescription, alergias: e.target.value })}
+                    placeholder="Alergias del paciente"
+                  ></textarea>
+                </div>
+
+                <div className="prescription-form-group">
+                  <label>Síntomas:</label>
+                  <textarea
+                    value={prescription.symptoms}
+                    onChange={(e) => setPrescription({ ...prescription, symptoms: e.target.value })}
+                    required
+                  ></textarea>
+                </div>
+
+                <div className="prescription-form-group">
+                  <label>Diagnóstico:</label>
+                  <textarea
+                    value={prescription.diagnosis}
+                    onChange={(e) => setPrescription({ ...prescription, diagnosis: e.target.value })}
+                    required
+                  ></textarea>
+                </div>
+
+                <div className="prescription-form-group">
+                  <label>Tratamiento:</label>
+                  <textarea
+                    value={prescription.treatment}
+                    onChange={(e) => setPrescription({ ...prescription, treatment: e.target.value })}
+                    required
+                  ></textarea>
+                </div>
               </div>
 
               <div className="prescription-actions">

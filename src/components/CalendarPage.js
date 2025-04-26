@@ -156,19 +156,25 @@ function CalendarPage() {
   }
 
   // Mini calendar navigation
-  const prevMiniMonth = () => {
+  const prevMiniMonth = (e) => {
+    e.stopPropagation()
+    e.preventDefault()
     setMiniCalendarDate(subMonths(miniCalendarDate, 1))
   }
 
-  const nextMiniMonth = () => {
+  const nextMiniMonth = (e) => {
+    e.stopPropagation()
+    e.preventDefault()
     setMiniCalendarDate(addMonths(miniCalendarDate, 1))
   }
 
-  const prevMiniMonthEnd = () => {
+  const prevMiniMonthEnd = (e) => {
+    e.stopPropagation()
     setMiniCalendarEndDate(subMonths(miniCalendarEndDate, 1))
   }
 
-  const nextMiniMonthEnd = () => {
+  const nextMiniMonthEnd = (e) => {
+    e.stopPropagation()
     setMiniCalendarEndDate(addMonths(miniCalendarEndDate, 1))
   }
 
@@ -663,6 +669,27 @@ function CalendarPage() {
     )
   }
 
+  // Toggle dropdown functions
+  const toggleMiniCalendar = (e) => {
+    e.stopPropagation()
+    setShowMiniCalendar(!showMiniCalendar)
+  }
+
+  const toggleTimeDropdown = (e) => {
+    e.stopPropagation()
+    setShowTimeDropdown(!showTimeDropdown)
+  }
+
+  const togglePatientDropdown = (e) => {
+    e.stopPropagation()
+    setShowPatientDropdown(!showPatientDropdown)
+  }
+
+  const toggleReasonDropdown = (e) => {
+    e.stopPropagation()
+    setShowReasonDropdown(!showReasonDropdown)
+  }
+
   return (
     <div className="home-container">
       {/* Header */}
@@ -687,8 +714,6 @@ function CalendarPage() {
             </div>
           )}
         </div>
-        
-
       </header>
 
       <div className="divider-line"></div>
@@ -815,11 +840,13 @@ function CalendarPage() {
                       setShowPatientDropdown(true)
                     }}
                     placeholder="Buscar paciente"
-                    onClick={() => setShowPatientDropdown(true)}
+                    onClick={togglePatientDropdown}
                   />
                   <div className="input-icons">
                     <SearchIcon />
-                    <ChevronDownIcon onClick={() => setShowPatientDropdown(!showPatientDropdown)} />
+                    <div onClick={togglePatientDropdown} style={{ cursor: "pointer" }}>
+                      <ChevronDownIcon />
+                    </div>
                   </div>
                   {showPatientDropdown && (
                     <div className="dropdown-menu">
@@ -843,21 +870,23 @@ function CalendarPage() {
                     type="text"
                     value={format(parseISO(newAppointment.date), "dd/MM/yyyy")}
                     readOnly
-                    onClick={() => setShowMiniCalendar(!showMiniCalendar)}
+                    onClick={toggleMiniCalendar}
                   />
                   <div className="input-icons">
-                    <ChevronDownIcon onClick={() => setShowMiniCalendar(!showMiniCalendar)} />
+                    <div onClick={toggleMiniCalendar} style={{ cursor: "pointer" }}>
+                      <ChevronDownIcon />
+                    </div>
                   </div>
                   {showMiniCalendar && (
-                    <div className="mini-calendar">
+                    <div className="mini-calendar" onClick={(e) => e.stopPropagation()}>
                       <div className="mini-calendar-header">
-                        <button className="nav-button" onClick={prevMiniMonth}>
+                        <button type="button" className="nav-button" onClick={(e) => prevMiniMonth(e)}>
                           <ChevronLeftIcon />
                         </button>
                         <span className="mini-calendar-month">
                           {monthNames[miniCalendarDate.getMonth()]} {miniCalendarDate.getFullYear()}
                         </span>
-                        <button className="nav-button" onClick={nextMiniMonth}>
+                        <button type="button" className="nav-button" onClick={(e) => nextMiniMonth(e)}>
                           <ChevronRightIcon />
                         </button>
                       </div>
@@ -895,14 +924,11 @@ function CalendarPage() {
               <div className="form-group">
                 <label>Hora</label>
                 <div className="input-with-icon">
-                  <input
-                    type="text"
-                    value={selectedTime}
-                    readOnly
-                    onClick={() => setShowTimeDropdown(!showTimeDropdown)}
-                  />
+                  <input type="text" value={selectedTime} readOnly onClick={toggleTimeDropdown} />
                   <div className="input-icons">
-                    <ChevronDownIcon onClick={() => setShowTimeDropdown(!showTimeDropdown)} />
+                    <div onClick={toggleTimeDropdown} style={{ cursor: "pointer" }}>
+                      <ChevronDownIcon />
+                    </div>
                   </div>
                   {showTimeDropdown && (
                     <div className="dropdown-menu">
@@ -962,21 +988,23 @@ function CalendarPage() {
                     type="text"
                     value={format(parseISO(blockDays.startDate), "dd/MM/yyyy")}
                     readOnly
-                    onClick={() => setShowMiniCalendar(!showMiniCalendar)}
+                    onClick={toggleMiniCalendar}
                   />
                   <div className="input-icons">
-                    <ChevronDownIcon onClick={() => setShowMiniCalendar(!showMiniCalendar)} />
+                    <div onClick={toggleMiniCalendar} style={{ cursor: "pointer" }}>
+                      <ChevronDownIcon />
+                    </div>
                   </div>
                   {showMiniCalendar && (
                     <div className="mini-calendar">
                       <div className="mini-calendar-header">
-                        <button className="nav-button" onClick={prevMiniMonth}>
+                        <button className="nav-button" onClick={(e) => prevMiniMonth(e)}>
                           <ChevronLeftIcon />
                         </button>
                         <span className="mini-calendar-month">
                           {monthNames[miniCalendarDate.getMonth()]} {miniCalendarDate.getFullYear()}
                         </span>
-                        <button className="nav-button" onClick={nextMiniMonth}>
+                        <button className="nav-button" onClick={(e) => nextMiniMonth(e)}>
                           <ChevronRightIcon />
                         </button>
                       </div>
@@ -1027,18 +1055,20 @@ function CalendarPage() {
                     onClick={() => setShowMiniCalendarEnd(!showMiniCalendarEnd)}
                   />
                   <div className="input-icons">
-                    <ChevronDownIcon onClick={() => setShowMiniCalendarEnd(!showMiniCalendarEnd)} />
+                    <div onClick={() => setShowMiniCalendarEnd(!showMiniCalendarEnd)} style={{ cursor: "pointer" }}>
+                      <ChevronDownIcon />
+                    </div>
                   </div>
                   {showMiniCalendarEnd && (
                     <div className="mini-calendar">
                       <div className="mini-calendar-header">
-                        <button className="nav-button" onClick={prevMiniMonthEnd}>
+                        <button className="nav-button" onClick={(e) => prevMiniMonthEnd(e)}>
                           <ChevronLeftIcon />
                         </button>
                         <span className="mini-calendar-month">
                           {monthNames[miniCalendarEndDate.getMonth()]} {miniCalendarEndDate.getFullYear()}
                         </span>
-                        <button className="nav-button" onClick={nextMiniMonthEnd}>
+                        <button className="nav-button" onClick={(e) => nextMiniMonthEnd(e)}>
                           <ChevronRightIcon />
                         </button>
                       </div>
@@ -1076,14 +1106,11 @@ function CalendarPage() {
               <div className="form-group">
                 <label>Motivo</label>
                 <div className="input-with-icon">
-                  <input
-                    type="text"
-                    value={selectedReason}
-                    readOnly
-                    onClick={() => setShowReasonDropdown(!showReasonDropdown)}
-                  />
+                  <input type="text" value={selectedReason} readOnly onClick={toggleReasonDropdown} />
                   <div className="input-icons">
-                    <ChevronDownIcon onClick={() => setShowReasonDropdown(!showReasonDropdown)} />
+                    <div onClick={toggleReasonDropdown} style={{ cursor: "pointer" }}>
+                      <ChevronDownIcon />
+                    </div>
                   </div>
                   {showReasonDropdown && (
                     <div className="dropdown-menu">

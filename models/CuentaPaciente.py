@@ -4,7 +4,12 @@ from config.db import engine, Base
 import passlib.hash as _hash
 from typing import Optional, List
 from datetime import date
-from models import Paciente_Telefono, Notificacion_Paciente, Cita, Alergia
+#from models import Paciente_Telefono, Notificacion_Paciente, Cita, Alergia
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from models import Paciente_Telefono, Notificacion_Paciente, Cita, Alergia
 
 class CuentaPaciente(Base):
     __tablename__ = "CuentaPaciente"

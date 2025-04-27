@@ -14,5 +14,4 @@ class FechaDisponible(_FechaDisponibleBase):
     idAdmin: int | None = None
     seleccionado: str | None = None
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}

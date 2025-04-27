@@ -1,5 +1,4 @@
-from pydantic import BaseModel, EmailStr, SecretStr
-from datetime import date
+from pydantic import BaseModel
 
 class _AlergiaBase(BaseModel):
     nombre: str
@@ -12,5 +11,4 @@ class Alergia(_AlergiaBase):
     id: int
     idPaciente: int
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}

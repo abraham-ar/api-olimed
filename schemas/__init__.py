@@ -1,5 +1,6 @@
 #schemas/__init__.py
 
+from .Admin import AdminLogin
 from .Paciente import *
 from .Paciente_Telefono import *
 from .Alergia import *

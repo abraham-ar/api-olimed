@@ -2,7 +2,11 @@ from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Optional
 from config.db import Base
-from models import Cita
+#from models import Cita
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from models import Cita
 
 class Receta(Base):
     __tablename__ = "Receta"

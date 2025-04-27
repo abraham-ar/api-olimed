@@ -3,7 +3,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from config.db import Base
 from typing import Optional
-from models import CuentaAdmin, Cita
+#from models import CuentaAdmin, Cita
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from models import CuentaAdmin, Cita
 
 class FechaDisponible(Base):
     __tablename__ = "FechaDisponible"

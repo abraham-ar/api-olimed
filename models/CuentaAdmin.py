@@ -3,8 +3,12 @@ from sqlalchemy.orm import mapped_column, Mapped, relationship
 from config.db import Base
 import passlib.hash as _hash
 from typing import List
-from models import Cita, Notificacion_Admin, FechaDisponible
-  
+#from models import Cita, Notificacion_Admin, FechaDisponible
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from models import Cita, Notificacion_Admin, FechaDisponible
+
 class CuentaAdmin(Base):
     __tablename__ = "CuentaAdmin"
 

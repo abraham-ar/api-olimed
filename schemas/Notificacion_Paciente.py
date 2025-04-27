@@ -16,5 +16,4 @@ class Notificacion_Paciente(_Notificacion_PacienteBase):
     tipoNotificacion: str | None = None
     fechaCreacion: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}

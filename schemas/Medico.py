@@ -11,8 +11,7 @@ class Medico(_MedicoBase):
     idAdmin: int
     clave: str
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
         
 class MedicoUpdatePassword(BaseModel): #actualización de password
     current_password: str

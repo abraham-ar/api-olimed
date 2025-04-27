@@ -11,5 +11,4 @@ class Paciente_Telefono(_Paciente_TelefonoBase):
     id: int
     idPaciente: int
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}

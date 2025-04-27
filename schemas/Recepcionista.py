@@ -12,15 +12,13 @@ class RecepcionistaCreate(_RecepcionistaBase): #datos de registro
 class RecepcionistaSimple(_RecepcionistaBase):
     clave: str
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 class Recepcionista(_RecepcionistaBase):
     idRecepcionista: int
     clave: str
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
         
 class RecepcionistaRecoverPassword(_RecepcionistaBase):
     correo: EmailStr

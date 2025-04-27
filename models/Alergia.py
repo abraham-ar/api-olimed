@@ -1,7 +1,13 @@
 from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from models import CuentaPaciente
+#from models import CuentaPaciente
 from config.db import Base
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from models import CuentaPaciente
+
 
 class Alergia(Base):
     __tablename__ = "Alergia"

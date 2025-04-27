@@ -11,5 +11,4 @@ class Cita_Sintoma(_Cita_SintomaBase):
     idSintoma: int
     idCita: int
 
-    class Config: 
-        orm_mode = True
+    model_config = {"from_attributes": True}

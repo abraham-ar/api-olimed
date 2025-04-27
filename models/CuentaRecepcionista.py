@@ -3,13 +3,17 @@ from sqlalchemy.orm import mapped_column, Mapped, relationship
 from config.db import Base
 import passlib.hash as _hash
 from typing import List
-from models import Cita
+#from models import Cita
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from models import Cita
 
 class CuentaRecepcionista(Base):
     __tablename__ = "CuentaRecepcionista"
 
     idRecepcionista: Mapped[int] = mapped_column(primary_key=True)
-    clave: Mapped[str] = mapped_column(String(45), unique=True, nullable=False)
+    clave: Mapped[str] = mapped_column(String(45), unique=True, nullable=False) #se debe de generar
     hashed_password: Mapped[str] = mapped_column(String(100), nullable=False)
     nombre: Mapped[str] = mapped_column(String(100), nullable=False)
     correo: Mapped[str] = mapped_column(String(100), unique=True)

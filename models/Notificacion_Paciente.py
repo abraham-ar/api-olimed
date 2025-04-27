@@ -3,7 +3,12 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Optional
 from datetime import datetime
 from config.db import Base
-from models import CuentaPaciente
+#from models import CuentaPaciente
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from models import CuentaPaciente
+
 
 class Notificacion_Paciente(Base):
     __tablename__ = "Notificacion_Paciente"

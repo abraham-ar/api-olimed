@@ -18,5 +18,4 @@ class Receta(_RecetaBase):
     idReceta: int
     idCita: int
 
-    class Config: 
-        orm_mode = True
+    model_config = {"from_attributes": True}

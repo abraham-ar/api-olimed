@@ -1,10 +1,15 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from typing import Optional, List
-from datetime import datetime
-from models import CuentaPaciente
+from typing import Optional, List, TYPE_CHECKING
 from config.db import Base
-from models import CuentaAdmin, CuentaPaciente, CuentaRecepcionista, Cita_Sintoma, Receta, FechaDisponible
+#from models import Cita_Sintoma, Receta
+#from models import CuentaAdmin, CuentaPaciente, CuentaRecepcionista, Cita_Sintoma, Receta, FechaDisponible
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from models import CuentaAdmin, CuentaRecepcionista, CuentaPaciente, FechaDisponible, Cita_Sintoma, Receta
+
 
 class Cita(Base):
     __tablename__ = "Cita"

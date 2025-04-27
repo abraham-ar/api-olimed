@@ -29,10 +29,6 @@ class PacienteForRecepcionista(_PacienteBase): #datos de contacto y id
 
     model_config = {"from_attributes": True}
 
-class PacienteLogin(BaseModel):
-    correo: EmailStr
-    password: str
-    
 class PacienteRecoverPassword(_PacienteBase): #recuperar contraseña
     new_password: SecretStr
 

@@ -1,0 +1,265 @@
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f4f8;
+}
+
+/* Header Styles */
+.home-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f0f4f8;
+  border-bottom: 1px solid #d1d5db;
+}
+
+.logo-container {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden; /* <-- AGREGADO para que el logo quede recortado circular */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+}
+
+/* Nueva clase para el logo imagen */
+.logo-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner {
+  flex: 1;
+  height: 60px;
+  background-color: #e2e8f0;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 2rem;
+  margin: 0 1rem;
+  background-image: url("https://images.unsplash.com/photo-1522748906645-95d8adfd52c7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80");
+  background-size: cover;
+  background-position: center;
+}
+
+
+.banner-text {
+  font-family: "Brush Script MT", cursive;
+  font-size: 1.8rem;
+  color: #0c3b5e;
+}
+
+.profile-container {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.profile-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #0c3b5e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+}
+
+/* Profile Dropdown Styles */
+.profile-dropdown {
+  position: absolute;
+  top: 70px;
+  right: 0;
+  width: 200px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: #f5f5f5;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: #e2e8f0;
+  margin: 4px 0;
+}
+
+/* Content Wrapper */
+.content-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 80px;
+  background-color: #f0f4f8;
+  border-right: 1px solid #d1d5db;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.sidebar-item {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  color: #0c3b5e;
+}
+
+.sidebar-item.active {
+  background-color: #3498db;
+  color: white;
+}
+
+.sidebar-item:hover:not(.active) {
+  background-color: #e2e8f0;
+}
+
+/* Main Content Styles */
+.main-content {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.notification-item {
+  display: flex;
+  background-color: #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.notification-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #f0f4f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  color: #0c3b5e;
+  border: 1px solid #d1d5db;
+  flex-shrink: 0;
+}
+
+.notification-content {
+  flex: 1;
+  text-align: center;
+}
+
+.notification-content p {
+  margin: 0;
+  line-height: 1.5;
+  color: #0c3b5e;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .home-header {
+    flex-direction: column;
+    padding: 0.5rem;
+  }
+
+  .logo-container,
+  .profile-container {
+    width: 60px;
+    height: 60px;
+  }
+
+  .logo-circle,
+  .profile-circle {
+    width: 40px;
+    height: 40px;
+  }
+
+  .banner {
+    width: 100%;
+    margin: 0.5rem 0;
+    height: 40px;
+    padding-right: 1rem;
+  }
+
+  .banner-text {
+    font-size: 1.2rem;
+  }
+
+  .content-wrapper {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: 60px;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 0.5rem;
+    border-right: none;
+    border-bottom: 1px solid #d1d5db;
+  }
+
+  .sidebar-item {
+    margin-bottom: 0;
+    margin-right: 0.5rem;
+  }
+
+  .notification-item {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .notification-icon {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .profile-dropdown {
+    top: 50px;
+    right: 10px;
+  }
+}
+

@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, Security, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from config.db import get_db
 from schemas.Admin import AdminLogin
@@ -8,33 +9,19 @@ from schemas.Recepcionista import *
 from models import CuentaAdmin, CuentaPaciente, CuentaRecepcionista, Cita, Paciente_Telefono, Alergia
 from passlib.hash import bcrypt
 from datetime import datetime
-
-def generar_clave(db: Session) -> str:
-    year_actual = datetime.now().year % 100
-
-    last_recepcionista = db.query(CuentaRecepcionista).order_by(CuentaRecepcionista.idRecepcionista.desc()).first()
-
-    if last_recepcionista:
-        secuencia = last_recepcionista.idRecepcionista + 1
-    else:
-        secuencia = 1
-
-    secuencia_str = str(secuencia).zfill(4)
-
-    clave = f"{year_actual}{secuencia_str}"
-
-    return clave
+import services as _services
 
 auth = APIRouter()
 
 @auth.post("/auth/register/recepcionistas")
 async def registerRecepcionista(recepcionista: RecepcionistaCreate, db: Session = Depends(get_db)):
-    db_recepcionista = db.query(CuentaRecepcionista).filter(CuentaRecepcionista.correo == recepcionista.correo).first()
+    db_recepcionista = await _services.get_recepcionista_by_email(recepcionista.correo, db)
+
     if db_recepcionista:
         raise HTTPException(status_code=400, detail="Correo ya registrado")
     
     #generar clave de inicio de sesion
-    clave_sesion = generar_clave(db=db)
+    clave_sesion = await _services.generar_clave_recepcionista(db=db)
 
     recepcionista_obj = CuentaRecepcionista(
         nombre = recepcionista.nombre,
@@ -52,7 +39,7 @@ async def registerRecepcionista(recepcionista: RecepcionistaCreate, db: Session 
 
 @auth.post("/auth/register/pacientes")
 async def registerPaciente(paciente: PacienteCreate, db: Session = Depends(get_db)):
-    db_paciente = db.query(CuentaPaciente).filter(CuentaPaciente.correo == paciente.correo).first()
+    db_paciente = await _services.get_paciente_by_email(paciente.correo, db)
 
     if db_paciente:
         HTTPException(status_code=400, detail="Correo ya registrado")
@@ -70,10 +57,29 @@ async def registerPaciente(paciente: PacienteCreate, db: Session = Depends(get_d
     db.refresh(paciente_obj)
     return paciente_obj
 
-@auth.post("/auth/login/admin")
-async def loginAdmin(admin: AdminLogin ,db: Session = Depends(get_db)):
-    pass
+@auth.post("/auth/login/medicos")
+async def loginMedico(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    medico = await _services.authenticate_medico(form_data.username, form_data.password, db)
+
+    if not medico:
+        return HTTPException(status_code=401, detail="Credenciales del medico no validas")
+    
+    return await _services.create_token(data={"sub":medico.clave, "role": "medico"})
+
+@auth.post("/auth/login/recepcionistas")
+async def loginRecepcionista(form_data: OAuth2PasswordRequestForm = Depends() ,db: Session = Depends(get_db)):
+    recepcionista = await _services.authenticate_recepcionista(form_data.username, form_data.password, db)
+
+    if not recepcionista:
+        return HTTPException(status_code=401, detail="Credenciales del recepcionista no validas")
+    
+    return await _services.create_token(data={"sub": recepcionista.clave, "role": "recepcionista"})
 
 @auth.post("/auth/login/pacientes")
-async def loginPaciente(db: Session = Depends(get_db)):
-    pass
+async def loginPaciente(form_data: OAuth2PasswordRequestForm = Depends() ,db: Session = Depends(get_db)):
+    paciente = await _services.authenticate_paciente(form_data.username, form_data.password, db)
+
+    if not paciente:
+        return HTTPException(status_code=401, detail="Credenciales del paciente no validas")
+    
+    return await _services.create_token(data={"sub": paciente.correo, "role": "paciente"})

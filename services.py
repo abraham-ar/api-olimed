@@ -1,7 +1,7 @@
 from config.db import Base, engine
 from sqlalchemy.orm import Session
 from models import CuentaAdmin, CuentaRecepcionista, CuentaPaciente, Alergia , Paciente_Telefono, Notificacion_Paciente, Cita, Cita_Sintoma, Receta, FechaDisponible, Notificacion_Admin
-from schemas.Paciente import PacienteLogin, Paciente
+from schemas.Paciente import Paciente
 from datetime import datetime, timedelta
 import jwt as _jwt
 

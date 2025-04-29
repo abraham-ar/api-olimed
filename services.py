@@ -32,6 +32,13 @@ async def get_recepcionista_by_clave(clave: str, db: Session):
 async def get_medico_by_clave(clave: str, db: Session):
     return db.query(CuentaAdmin).filter(CuentaAdmin.clave == clave).first()
 
+def get_medico_by_id(id: int, db: Session):
+    return db.query(CuentaAdmin).filter(CuentaAdmin.idAdmin == id).first()
+
+def get_medicos(limit: int, skip: int, db:Session):
+    db.query(CuentaAdmin).count()
+    return db.query(CuentaAdmin).order_by(CuentaAdmin.nombre).offset(skip).limit(limit).all()
+
 async def generar_clave_recepcionista(db: Session) -> str:
     year_actual = datetime.now().year % 100
 

@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes import auth, pacientes
+from routes import auth, pacientes, medicos
 from config.db import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
 import services
@@ -23,3 +23,4 @@ app.add_middleware(
 
 app.include_router(auth)
 app.include_router(pacientes)
+app.include_router(medicos)

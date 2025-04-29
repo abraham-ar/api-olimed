@@ -10,25 +10,45 @@ function Login() {
   const [password, setPassword] = useState("")
   const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log("Login attempt with:", { clave, password })
-
-    let role = ""
-
-    if (clave === "Medico123") {
-      role = "medico"
-    } else if (clave === "Recep456") {
-      role = "recepcionista"
-    } else if (clave === "Patient") {
-      role = "paciente"
-    }else {
-      alert("Clave incorrecta. Intenta con una clave válida.")
-      return
+  
+    let loginUrl = ""
+  
+    if (clave.startsWith("Medico")) {
+      loginUrl = "http://localhost:8000/auth/login/medicos"
+    } else if (clave.startsWith("Recep")) {
+      loginUrl = "http://localhost:8000/auth/login/recepcionistas"
+    } else {
+      loginUrl = "http://localhost:8000/auth/login/pacientes"
     }
-
-    localStorage.setItem("userRole", role)
-    navigate("/home")
+  
+    try {
+      const response = await fetch(loginUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+          username: clave,
+          password: password
+        })
+      })
+  
+      if (!response.ok) {
+        throw new Error("Credenciales inválidas")
+      }
+  
+      const data = await response.json()
+  
+      localStorage.setItem("userToken", data.access_token)
+      localStorage.setItem("userRole", data.role)
+  
+      navigate("/home")
+    } catch (error) {
+      console.error("Error en login:", error)
+      alert("Clave o contraseña incorrecta")
+    }
   }
 
   const EyeIcon = () => (

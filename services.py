@@ -1,5 +1,5 @@
 from config.db import Base, engine
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from models import CuentaAdmin, CuentaRecepcionista, CuentaPaciente, Alergia , Paciente_Telefono, Notificacion_Paciente, Cita, Cita_Sintoma, Receta, FechaDisponible, Notificacion_Admin
 from schemas.Paciente import Paciente
 from datetime import datetime, timedelta
@@ -13,6 +13,15 @@ def create_database():
 
 async def get_paciente_by_email(correo: str,db: Session):
     return db.query(CuentaPaciente).filter(CuentaPaciente.correo == correo).first()
+
+async def get_paciente_by_id(id: int, db: Session):
+    return db.query(CuentaPaciente)\
+        .options(
+            selectinload(CuentaPaciente.Alergias),
+            selectinload(CuentaPaciente.Telefonos)
+        )\
+        .filter(CuentaPaciente.idPaciente == id)\
+        .first()
 
 async def get_recepcionista_by_email(correo: str,db: Session):
     return db.query(CuentaRecepcionista).filter(CuentaRecepcionista.correo == correo).first()
@@ -79,3 +88,7 @@ async def create_token(data: dict):
     token = _jwt.encode(to_encode, JWT_SECRET)
 
     return dict(access_token = token, token_type="bearer")
+
+
+async def get_pacientes(limit: int, skip: int, db: Session):
+    return db.query(CuentaPaciente).order_by(CuentaPaciente.nombre).offset(skip).limit(limit).all()

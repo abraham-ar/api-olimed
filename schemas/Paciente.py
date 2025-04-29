@@ -17,12 +17,18 @@ class PacienteCreate(_PacienteBase): #datos de registro
 class Paciente(_PacienteBase):
     idPaciente: int
     tipo_sangre: str | None = None
-    alergias: List[Alergia] = []
+    Alergias: List[Alergia] = []
     direccion: str | None = None
-    telefonos: List[Paciente_Telefono] = []
+    Telefonos: List[Paciente_Telefono] = []
 
     model_config = {"from_attributes": True}
         
+
+class PacienteUpdate(BaseModel):
+    nombre: str | None = None
+    fecha_nacimiento: date | None = None
+    tipo_sangre: date | None =  None
+    direccion: str | None = None
 
 class PacienteForRecepcionista(_PacienteBase): #datos de contacto y id
     idPaciente: int

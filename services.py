@@ -23,11 +23,17 @@ async def get_paciente_by_id(id: int, db: Session):
         .filter(CuentaPaciente.idPaciente == id)\
         .first()
 
+def get_recepcionistas(limit: int, skip: int, db: Session):
+    return db.query(CuentaRecepcionista).order_by(CuentaRecepcionista.nombre).offset(skip).limit(limit).all()
+
 async def get_recepcionista_by_email(correo: str,db: Session):
     return db.query(CuentaRecepcionista).filter(CuentaRecepcionista.correo == correo).first()
 
 async def get_recepcionista_by_clave(clave: str, db: Session):
     return db.query(CuentaRecepcionista).filter(CuentaRecepcionista.clave == clave).first()
+
+def get_recepcionista_by_id(id: str, db: Session):
+    return db.query(CuentaRecepcionista).filter(CuentaRecepcionista.idRecepcionista == id).first()
 
 async def get_medico_by_clave(clave: str, db: Session):
     return db.query(CuentaAdmin).filter(CuentaAdmin.clave == clave).first()

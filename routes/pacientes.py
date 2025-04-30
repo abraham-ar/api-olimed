@@ -16,6 +16,10 @@ async def getPacientes(limit: int = 10, skip: int = 0, db: Session = Depends(get
 #Obtiene un paciente en especifico
 @pacientes.get("/paciente/{id_paciente}", response_model=Paciente)
 async def getPaciente(id_paciente: int, db: Session = Depends(get_db)):
+
+    if not paciente:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+
     paciente = await _services.get_paciente_by_id(id_paciente, db)
     return paciente
 

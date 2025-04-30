@@ -4,6 +4,10 @@ class _RecepcionistaBase(BaseModel):
     #datos generales
     nombre: str
 
+class RecepcionistaUpdate(_RecepcionistaBase):
+    correo: EmailStr
+    telefono: str
+
 class RecepcionistaCreate(_RecepcionistaBase): #datos de registro
     correo: EmailStr
     telefono: str
@@ -17,6 +21,8 @@ class RecepcionistaSimple(_RecepcionistaBase):
 class Recepcionista(_RecepcionistaBase):
     idRecepcionista: int
     clave: str
+    correo: EmailStr
+    telefono: str
 
     model_config = {"from_attributes": True}
         

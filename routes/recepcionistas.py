@@ -15,7 +15,7 @@ async def getRecepcionistas(limit: int = 10, skip: int = 0, db: Session = Depend
 
 #Obtiene un recepcionista en especifico
 @recepcionistas.get("/recepcionista/{id_recepcionista}", response_model=Recepcionista)
-async def getMedico(id_recepcionista: int, db: Session = Depends(get_db)):
+async def getRecepcionista(id_recepcionista: int, db: Session = Depends(get_db)):
     recepcionista = _services.get_recepcionista_by_id(id_recepcionista, db)
 
     if not recepcionista:
@@ -25,7 +25,7 @@ async def getMedico(id_recepcionista: int, db: Session = Depends(get_db)):
 
 #modifica un recepcionista
 @recepcionistas.put("/recepcionista/{id_recepcionista}", response_model=Recepcionista)
-async def modificaMedico(id_recepcionista: int, recepcionista_update: RecepcionistaUpdate, db: Session = Depends(get_db)):
+async def modificaRecepcionista(id_recepcionista: int, recepcionista_update: RecepcionistaUpdate, db: Session = Depends(get_db)):
     recepcionista_db = _services.get_recepcionista_by_id(id_recepcionista, db)
 
     if not recepcionista_db:

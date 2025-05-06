@@ -11,6 +11,7 @@ ACCESS_TOKEN_EXPIRE = 30
 def create_database():
     return Base.metadata.create_all(bind=engine)
 
+#metodos para obtener los registros de cuentapaciente
 async def get_paciente_by_email(correo: str,db: Session):
     return db.query(CuentaPaciente).filter(CuentaPaciente.correo == correo).first()
 
@@ -23,6 +24,11 @@ async def get_paciente_by_id(id: int, db: Session):
         .filter(CuentaPaciente.idPaciente == id)\
         .first()
 
+async def get_pacientes(limit: int, skip: int, db: Session):
+    return db.query(CuentaPaciente).order_by(CuentaPaciente.nombre).offset(skip).limit(limit).all()
+
+
+#metodos para devolver los registros de cuentarecepcionista
 def get_recepcionistas(limit: int, skip: int, db: Session):
     return db.query(CuentaRecepcionista).order_by(CuentaRecepcionista.nombre).offset(skip).limit(limit).all()
 
@@ -35,6 +41,8 @@ async def get_recepcionista_by_clave(clave: str, db: Session):
 def get_recepcionista_by_id(id: str, db: Session):
     return db.query(CuentaRecepcionista).filter(CuentaRecepcionista.idRecepcionista == id).first()
 
+
+#metodos para devolver los registros de cuentaAdmin
 async def get_medico_by_clave(clave: str, db: Session):
     return db.query(CuentaAdmin).filter(CuentaAdmin.clave == clave).first()
 
@@ -42,9 +50,22 @@ def get_medico_by_id(id: int, db: Session):
     return db.query(CuentaAdmin).filter(CuentaAdmin.idAdmin == id).first()
 
 def get_medicos(limit: int, skip: int, db:Session):
-    db.query(CuentaAdmin).count()
     return db.query(CuentaAdmin).order_by(CuentaAdmin.nombre).offset(skip).limit(limit).all()
 
+#metodo para obtener registros de FechasDisponibles
+def get_fechasDisponibles(inicio: datetime, fin: datetime, db: Session):
+    return db.query(FechaDisponible).filter(FechaDisponible.fecha >= inicio,
+                                            FechaDisponible.fecha <= fin, 
+                                            FechaDisponible.disponible == 1,
+                                            FechaDisponible.seleccionado == 0).order_by(FechaDisponible.fecha).all()
+
+def get_fechaDisponible_by_fecha(fecha: datetime, db: Session):
+    return db.query(FechaDisponible).filter(FechaDisponible.fecha == fecha).first()
+
+def get_fechaDisponible_by_id(id: int, db: Session):
+    return db.query(FechaDisponible).filter(FechaDisponible.idFecha == id).first()
+
+#metodo para generar la clave del recepcionista
 async def generar_clave_recepcionista(db: Session) -> str:
     year_actual = datetime.now().year % 100
 
@@ -61,6 +82,8 @@ async def generar_clave_recepcionista(db: Session) -> str:
 
     return clave
 
+
+#metodos de autenticación para los 3 usuarios
 async def authenticate_medico(clave: str, password: str, db: Session):
     medico_db = await get_medico_by_clave(clave, db)
 
@@ -94,6 +117,7 @@ async def authenticate_paciente(correo: str, password: str, db: Session):
     
     return paciente_db
 
+#metodo usado para crear el JWT
 async def create_token(data: dict):
     to_encode = data.copy()
     expire = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE)
@@ -101,7 +125,3 @@ async def create_token(data: dict):
     token = _jwt.encode(to_encode, JWT_SECRET)
 
     return dict(access_token = token, token_type="bearer")
-
-
-async def get_pacientes(limit: int, skip: int, db: Session):
-    return db.query(CuentaPaciente).order_by(CuentaPaciente.nombre).offset(skip).limit(limit).all()

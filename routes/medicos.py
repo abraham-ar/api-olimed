@@ -9,7 +9,7 @@ medicos = APIRouter()
 
 #Obtiene todos los medicos
 @medicos.get("/medicos", response_model=List[Medico])
-async def getPacientes(limit: int = 10, skip: int = 0, db: Session = Depends(get_db)):
+async def getMedicos(limit: int = 10, skip: int = 0, db: Session = Depends(get_db)):
     medicos = _services.get_medicos(limit=limit, skip=skip, db=db)
     return medicos
 

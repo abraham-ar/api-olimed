@@ -64,7 +64,7 @@ async def loginMedico(form_data: OAuth2PasswordRequestForm = Depends(), db: Sess
     if not medico:
         raise HTTPException(status_code=401, detail="Credenciales del medico no validas")
     
-    return await _services.create_token(data={"sub":medico.clave, "role": "medico"})
+    return await _services.create_token(data={"sub": str(medico.idAdmin), "role": "medico"})
 
 @auth.post("/auth/login/recepcionistas")
 async def loginRecepcionista(form_data: OAuth2PasswordRequestForm = Depends() ,db: Session = Depends(get_db)):
@@ -73,7 +73,7 @@ async def loginRecepcionista(form_data: OAuth2PasswordRequestForm = Depends() ,d
     if not recepcionista:
         raise HTTPException(status_code=401, detail="Credenciales del recepcionista no validas")
     
-    return await _services.create_token(data={"sub": recepcionista.clave, "role": "recepcionista"})
+    return await _services.create_token(data={"sub": str(recepcionista.idRecepcionista), "role": "recepcionista"})
 
 @auth.post("/auth/login/pacientes")
 async def loginPaciente(form_data: OAuth2PasswordRequestForm = Depends() ,db: Session = Depends(get_db)):
@@ -82,4 +82,4 @@ async def loginPaciente(form_data: OAuth2PasswordRequestForm = Depends() ,db: Se
     if not paciente:
         raise HTTPException(status_code=401, detail="Credenciales del paciente no validas")
     
-    return await _services.create_token(data={"sub": paciente.correo, "role": "paciente"})
+    return await _services.create_token(data={"sub": str(paciente.idPaciente), "role": "paciente"})

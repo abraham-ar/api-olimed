@@ -11,6 +11,16 @@ class _RecetaBase(BaseModel):
     presion_arterial: str | None = None
     temperatura: float | None = None
 
+class RecetaUpdate(BaseModel):
+    tratamiento: str | None = None
+    talla: int | None = None
+    peso: float | None = None
+    fc: int | None = None
+    fr: int | None = None
+    saturacion_oxigeno: str | None = None
+    presion_arterial: str | None = None
+    temperatura: float | None = None
+
 class RecetaCreate(_RecetaBase):
     idCita: int    
 

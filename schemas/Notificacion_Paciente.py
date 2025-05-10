@@ -6,7 +6,7 @@ class _Notificacion_PacienteBase(BaseModel):
     mensaje: str
 
 class Notificacion_PacienteCreate(_Notificacion_PacienteBase):
-    idPaciente: int | None = None #es posible que no sea necesario, se envie a traves de la sesion
+    idPaciente: int
     tipoNotificacion: str | None = None
     fecnaCreacion: datetime = Field(default_factory=datetime.now)
 

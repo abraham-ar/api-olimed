@@ -6,6 +6,8 @@ from schemas.FechaDisponible import FechaDisponibleCreate, FechaDisponible, Fech
 from models import FechaDisponible as Fecha_db
 from typing import List
 from datetime import datetime, timedelta
+from schemas.Notificacion_Admin import Notificacion_AdminCreate
+from schemas.Notificacion_Paciente import Notificacion_PacienteCreate
 
 fechas = APIRouter()
 
@@ -56,6 +58,7 @@ async def modificaFecha(id_fecha: int, fecha_update: FechaDisponibleUpdate, db: 
     db.refresh(fecha_db)
     return fecha_db
 
+#modifica la disponibilidad de un rango de fechas (es decir, las oculta o las muestre como activas)
 @fechas.patch("/fechasDisponibles")
 async def changeDisponible(inicio: datetime, fin: datetime, disponible: int, db: Session = Depends(get_db)):
     fechas = _services.get_fechasDisponibles(inicio, fin, db)
@@ -67,6 +70,8 @@ async def changeDisponible(inicio: datetime, fin: datetime, disponible: int, db:
     return {"message": "Disponibilidad de fechas actualizadas"}
 
 
+#este endpoint cambia el estado de la seleccionado a 0 o 1 segun sea el caso, esto con el fin de marcar como seleccionado una fecha
+#cuando un paciente la seleccione para una cita, o desmarcarla si cancela la creación de la cita
 @fechas.patch("/fechaDisponible/{id_fecha}")
 async def changeSeleccionado(id_fecha: int, seleccionado: int, db: Session = Depends(get_db)):
     
@@ -83,11 +88,38 @@ async def changeSeleccionado(id_fecha: int, seleccionado: int, db: Session = Dep
 @fechas.delete("/fechaDisponible/{id_fecha}")
 async def deleteFechaDisponible(id_fecha: int, db: Session = Depends(get_db)):
     fecha_db = _services.get_fechaDisponible_by_id(id_fecha, db)
-
+    mensaje = {}
     if not fecha_db:
         raise HTTPException(status_code=404, detail="Ninguna fecha coincide con dicho id")
 
+    cita_asociada = fecha_db.Cita
+
+    if cita_asociada: 
+        notificacion = Notificacion_PacienteCreate(
+            titulo="Cita eliminada debido a que se eliminó una Fecha",
+            mensaje= f"Debido a que la Fecha disponible para el dia {fecha_db.fecha.date()} a las {fecha_db.fecha.time()} fue eliminada, tu cita para dicho día fue eliminada tambien",
+            idPaciente=cita_asociada.idPaciente,
+            fecnaCreacion=datetime.now(),
+            tipoNotificacion="Sistema"
+        )
+        _services.create_notificacion_paciente(notificacion, db)
+
+        #creación de la notificación para administrador
+        notificacion_admin = Notificacion_AdminCreate(
+            titulo="Cita cancelada",
+            mensaje = f"Debido a que la Fecha disponible para el dia {fecha_db.fecha.date()} a las {fecha_db.fecha.time()} fue eliminada, la cita con el paciente {cita_asociada.Paciente.nombre} fue eliminada tambien",
+            tipo="Sistema",
+            fecha_creacion=datetime.now()
+        )
+
+        _services.create_notificacion_medico(notificacion_admin, db)
+
+        db.delete(cita_asociada)
+        db.commit()
+        mensaje = {"message": "Fecha y cita eliminada"}
+    
     db.delete(fecha_db)
     db.flush()
     db.commit()
-    return {"message": "Fecha eliminada"}
+    mensaje = {"message": "Fecha eliminada"}
+    return mensaje

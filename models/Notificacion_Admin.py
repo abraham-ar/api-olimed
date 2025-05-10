@@ -16,7 +16,7 @@ class Notificacion_Admin(Base):
     idNotificacion: Mapped[int] = mapped_column(primary_key=True)
 
     #clave foranea de CuentaAdmin
-    idAdmin: Mapped[int] = mapped_column(ForeignKey("CuentaAdmin.idAdmin"), nullable=False)
+    idAdmin: Mapped[int] = mapped_column(ForeignKey("CuentaAdmin.idAdmin"), nullable=True)
 
     tipo: Mapped[str] = mapped_column(String(45), nullable=False)
     titulo: Mapped[str] = mapped_column(String(45), nullable=False)

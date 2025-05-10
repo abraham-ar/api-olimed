@@ -7,6 +7,9 @@ class _MedicoBase(BaseModel):
 class MedicoCreate(_MedicoBase): #datos de registro
     password: SecretStr
 
+class MedicoUpdate(BaseModel):
+    nombre: str | None = None
+
 class Medico(_MedicoBase):
     idAdmin: int
     clave: str

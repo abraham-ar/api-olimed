@@ -3,6 +3,9 @@ from pydantic import BaseModel
 class _AlergiaBase(BaseModel):
     nombre: str
 
+class AlergiaUpdate(BaseModel):
+    nombre: str | None = None
+
 #usado cuando se registra una nueva alergia
 class AlergiaCreate(_AlergiaBase):
     idPaciente: int | None = None

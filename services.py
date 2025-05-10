@@ -1,7 +1,9 @@
 from config.db import Base, engine
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.orm import Session, selectinload, joinedload
 from models import CuentaAdmin, CuentaRecepcionista, CuentaPaciente, Alergia , Paciente_Telefono, Notificacion_Paciente, Cita, Cita_Sintoma, Receta, FechaDisponible, Notificacion_Admin
 from schemas.Paciente import Paciente
+from schemas.Notificacion_Paciente import Notificacion_PacienteCreate
+from schemas.Notificacion_Admin import Notificacion_AdminCreate
 from datetime import datetime, timedelta
 import jwt as _jwt
 
@@ -24,8 +26,22 @@ async def get_paciente_by_id(id: int, db: Session):
         .filter(CuentaPaciente.idPaciente == id)\
         .first()
 
+def get_pacienteSimple_by_id(id: int, db: Session):
+    return db.query(CuentaPaciente).filter(CuentaPaciente.idPaciente == id).first()
+    
+
 async def get_pacientes(limit: int, skip: int, db: Session):
     return db.query(CuentaPaciente).order_by(CuentaPaciente.nombre).offset(skip).limit(limit).all()
+
+
+#operaciones con telefonos de pacientes
+def get_telefono_by_id(id: int, db: Session):
+    return db.query(Paciente_Telefono).filter(Paciente_Telefono.id == id).first()
+
+
+#operaciones con alergias de pacientes
+def get_alergia_by_id(id: int, db: Session):
+    return db.query(Alergia).filter(Alergia.id == id).first()
 
 
 #metodos para devolver los registros de cuentarecepcionista
@@ -64,6 +80,47 @@ def get_fechaDisponible_by_fecha(fecha: datetime, db: Session):
 
 def get_fechaDisponible_by_id(id: int, db: Session):
     return db.query(FechaDisponible).filter(FechaDisponible.idFecha == id).first()
+
+
+#metodos para Citas
+def get_cita_by_id(id: int, db: Session):
+    return db.query(Cita).filter(Cita.idCita == id).first()
+
+def get_citas(db: Session):
+     return db.query(Cita).join(Cita.Fecha).options(joinedload(Cita.Fecha)).order_by(FechaDisponible.fecha.asc()).all()
+
+def get_citas_activas(fecha: datetime ,db: Session):
+    return db.query(Cita).join(Cita.Fecha).options(joinedload(Cita.Fecha)).filter(Cita.estado == 1, FechaDisponible.fecha >= fecha).order_by(FechaDisponible.fecha).all()
+
+#metodos para recetas
+def get_receta_by_id(id: int, db: Session):
+    return db.query(Receta).filter(Receta.idCita == id).first()
+
+#metodos para notificaciones de paciente
+def create_notificacion_paciente(notificacion: Notificacion_PacienteCreate, db: Session):
+    notificacion_obj = Notificacion_Paciente(
+        idPaciente = notificacion.idPaciente,
+        tipoNotificacion = notificacion.tipoNotificacion,
+        titulo= notificacion.titulo,
+        mensaje = notificacion.mensaje,
+        fecha_creacion = notificacion.fecnaCreacion
+    )
+
+    db.add(notificacion_obj)
+    db.commit()
+
+def get_citas_proximas_by_paciente(id: int, db: Session):
+        fecha = datetime.now()
+        return db.query(Cita).join(Cita.Fecha).options(joinedload(Cita.Fecha)).filter(Cita.estado == 1, Cita.idPaciente == id, FechaDisponible.fecha >= fecha).order_by(FechaDisponible.fecha).all()
+
+#metodos para notificaciones de administrador
+def create_notificacion_medico(notificacion: Notificacion_AdminCreate, db: Session):
+    notifciacion_obj = Notificacion_Admin()
+    for key, value in notificacion.dict(exclude_none=True).items():
+        setattr(notifciacion_obj, key, value)
+    
+    db.add(notifciacion_obj)
+    db.commit()
 
 #metodo para generar la clave del recepcionista
 async def generar_clave_recepcionista(db: Session) -> str:

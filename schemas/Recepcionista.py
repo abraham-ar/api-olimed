@@ -10,7 +10,7 @@ class RecepcionistaUpdate(_RecepcionistaBase):
 
 class RecepcionistaCreate(_RecepcionistaBase): #datos de registro
     correo: EmailStr
-    telefono: str
+    telefono: str | None = None
     password: SecretStr
 
 class RecepcionistaSimple(_RecepcionistaBase):

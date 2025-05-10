@@ -6,6 +6,10 @@ from schemas.Notificacion_Paciente import Notificacion_PacienteCreate
 from schemas.Notificacion_Admin import Notificacion_AdminCreate
 from datetime import datetime, timedelta
 import jwt as _jwt
+from fastapi.security import OAuth2PasswordBearer
+from fastapi import Depends, HTTPException
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 JWT_SECRET = "myjwtsecret"
 ACCESS_TOKEN_EXPIRE = 30
@@ -179,6 +183,23 @@ async def create_token(data: dict):
     to_encode = data.copy()
     expire = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE)
     to_encode.update({"exp": expire})
-    token = _jwt.encode(to_encode, JWT_SECRET)
+    token = _jwt.encode(to_encode, JWT_SECRET, algorithm="HS256")
 
     return dict(access_token = token, token_type="bearer")
+
+
+def get_current_medico(token: str = Depends(oauth2_scheme)):
+    
+    try:
+        payload = _jwt.decode(token, JWT_SECRET, algorithms="HS256")
+        medico_id: int = payload.get("sub")
+    except _jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expirado")
+    except _jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Token inválido")
+
+    medico = get_medico_by_id(medico_id)
+    if medico is None:
+        raise HTTPException(status_code=404, detail="Médico no encontrado")
+
+    return medico

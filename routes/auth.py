@@ -10,6 +10,7 @@ from models import CuentaAdmin, CuentaPaciente, CuentaRecepcionista, Cita, Pacie
 from passlib.hash import bcrypt
 from datetime import datetime
 import services as _services
+from services import get_current_medico
 
 auth = APIRouter()
 
@@ -83,3 +84,17 @@ async def loginPaciente(form_data: OAuth2PasswordRequestForm = Depends() ,db: Se
         raise HTTPException(status_code=401, detail="Credenciales del paciente no validas")
     
     return await _services.create_token(data={"sub": str(paciente.idPaciente), "role": "paciente"})
+
+@auth.patch("/auth/change-password/medico")
+async def changePasswordMedico(passwords: MedicoUpdatePassword, db: Session = Depends(get_db), current_medico: CuentaAdmin = Depends(get_current_medico)):
+    if not current_medico:
+        raise HTTPException(status_code=401, detail="No autorizado para esta acción")
+    
+    if not current_medico.verify_password(passwords.current_password):
+        raise HTTPException(status_code=401, detail="No autorizado")
+    
+    current_medico.hashed_password = bcrypt.hash(passwords.new_password)
+
+    db.commit()
+    db.refresh(current_medico)
+    return {"message": "Contraseña modificada con exito"}

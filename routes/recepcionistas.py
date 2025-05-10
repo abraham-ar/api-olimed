@@ -4,11 +4,12 @@ from config.db import get_db
 import services as _services
 from schemas.Recepcionista import Recepcionista, RecepcionistaSimple, RecepcionistaUpdate
 from typing import List
+from passlib.hash import bcrypt
 
 recepcionistas = APIRouter()
 
 #Obtiene todos los recepcionistas
-@recepcionistas.get("/recepcionistas", response_model=List[RecepcionistaSimple])
+@recepcionistas.get("/recepcionistas", response_model=List[Recepcionista])
 async def getRecepcionistas(limit: int = 10, skip: int = 0, db: Session = Depends(get_db)):
     recepcionistas = _services.get_recepcionistas(limit=limit, skip=skip, db=db)
     return recepcionistas
@@ -28,11 +29,16 @@ async def getRecepcionista(id_recepcionista: int, db: Session = Depends(get_db))
 async def modificaRecepcionista(id_recepcionista: int, recepcionista_update: RecepcionistaUpdate, db: Session = Depends(get_db)):
     recepcionista_db = _services.get_recepcionista_by_id(id_recepcionista, db)
 
+    password = bcrypt.hash(recepcionista_update.password.get_secret_value())
+    recepcionista_update.password = None
+
     if not recepcionista_db:
         raise HTTPException(status_code=404, detail="Recepcionista no encontrado")
 
     for key, value in recepcionista_update.dict(exclude_unset=True).items():
         setattr(recepcionista_db, key, value)
+
+    recepcionista_db.hashed_password = password
 
     db.commit()
     db.refresh(recepcionista_db)

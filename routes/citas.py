@@ -38,7 +38,7 @@ async def getCitas(actuales: int, db: Session = Depends(get_db)):
     return citas_resultado
 
 #creación de citas
-citas.post("/citas")
+@citas.post("/citas")
 async def addCita(cita: CitaCreate, db: Session = Depends(get_db)):
 
     #comprueba que la fechaDisponible exista
@@ -102,7 +102,7 @@ async def addCita(cita: CitaCreate, db: Session = Depends(get_db)):
     db.refresh(cita_obj)
     return cita_obj
 
-@citas.delete("cita/{id_cita}")
+@citas.delete("/cita/{id_cita}")
 async def deleteCita(id_cita: int, db: Session = Depends(get_db)):
 
     cita_db = db.query(Cita_db).options(

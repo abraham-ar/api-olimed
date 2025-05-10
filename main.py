@@ -36,7 +36,7 @@ services.create_database()
 
 crear_usuario_principal()
 
-app = FastAPI()
+app = FastAPI(debug=True)
 
 app.add_middleware(
     CORSMiddleware,

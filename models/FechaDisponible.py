@@ -21,7 +21,7 @@ class FechaDisponible(Base):
     disponible: Mapped[int] = mapped_column(nullable=False)
 
     seleccionado: Mapped[Optional[int]] = mapped_column(nullable=True)
-
+    #
     #relacion usada para el ORM
     Medico: Mapped["CuentaAdmin"] = relationship(back_populates="Fechas")
     Cita: Mapped["Cita"] = relationship(back_populates="Fecha", cascade="all, delete-orphan")

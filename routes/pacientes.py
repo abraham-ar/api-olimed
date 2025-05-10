@@ -118,14 +118,14 @@ async def eliminaTelefono(id_paciente: int, id_telefono: int, db: Session = Depe
 #agrega una alergia para un paciente
 @pacientes.post("/paciente/{id_paciente}/alergia")
 async def addAlergia(id_paciente: int, alergia: AlergiaCreate,db: Session = Depends(get_db)):
-    paciente_db = _services.get_paciente_by_id(id_paciente, db)
+    paciente_db = await _services.get_paciente_by_id(id_paciente, db)
 
     if not paciente_db:
         raise HTTPException(status_code=404, detail="Ningun paciente coincide con el ID ingresado")
     
     alergia_obj = Alergia_db(
         nombre = alergia.nombre,
-        idPaciente = alergia.idPaciente
+        idPaciente = id_paciente
     )
 
     db.add(alergia_obj)
@@ -144,7 +144,7 @@ async def modificaAlergia(id_paciente: int, id_alergia: int, alergia_update: Ale
     if alergia_db.idPaciente != id_paciente:
         raise HTTPException(status_code=403, detail="Esta alergia no pertenece al paciente especificado")
 
-    for key, valor in alergia_update.dict(exclude_unset=True).items:
+    for key, valor in alergia_update.dict(exclude_unset=True).items():
         setattr(alergia_db, key, valor)
 
     db.flush()

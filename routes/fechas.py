@@ -46,7 +46,7 @@ async def getFechasDisponibles(inicio: datetime = Query(None), fin: datetime = Q
 #modifica una fechaDisponible
 @fechas.put("/fechaDisponible/{id_fecha}", response_model=FechaDisponible)
 async def modificaFecha(id_fecha: int, fecha_update: FechaDisponibleUpdate, db: Session = Depends(get_db)):
-    fecha_db = _services.get_recepcionista_by_id(id_fecha, db)
+    fecha_db = _services.get_fechaDisponible_by_id(id_fecha, db)
 
     if not fecha_db:
         raise HTTPException(status_code=404, detail="Fecha no encontrado")

@@ -4,9 +4,10 @@ class _RecepcionistaBase(BaseModel):
     #datos generales
     nombre: str
 
-class RecepcionistaUpdate(_RecepcionistaBase):
-    correo: EmailStr
-    telefono: str
+class RecepcionistaUpdate(BaseModel):
+    nombre: str | None = None
+    correo: EmailStr | None = None
+    telefono: str | None = None
 
 class RecepcionistaCreate(_RecepcionistaBase): #datos de registro
     correo: EmailStr

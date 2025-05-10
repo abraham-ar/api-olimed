@@ -7,8 +7,8 @@ class AlergiaUpdate(BaseModel):
     nombre: str | None = None
 
 #usado cuando se registra una nueva alergia
-class AlergiaCreate(_AlergiaBase):
-    idPaciente: int | None = None
+class AlergiaCreate(BaseModel):
+    nombre: str
 
 class Alergia(_AlergiaBase):
     id: int

@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from datetime import datetime
 
 class _RecetaBase(BaseModel):
     tratamiento: str
@@ -22,10 +23,12 @@ class RecetaUpdate(BaseModel):
     temperatura: float | None = None
 
 class RecetaCreate(_RecetaBase):
-    idCita: int    
+    idCita: int
+    fecha_creacion: datetime = Field(default_factory=datetime.now())    
 
 class Receta(_RecetaBase):
     idReceta: int
     idCita: int
+    fecha_creacion: datetime
 
     model_config = {"from_attributes": True}

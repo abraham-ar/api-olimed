@@ -214,6 +214,6 @@ async def obtenerRecetas(id_paciente: int, db: Session = Depends(get_db)):
     if not paciente_db:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
 
-    recetas = db.query(Receta_db).join(Cita_db).filter(Cita_db.idPaciente == id_paciente).order_by(Receta_db.idCita.desc()).all()
-
+    recetas = db.query(Receta_db).join(Cita_db).filter(Cita_db.idPaciente == id_paciente).order_by(Receta_db.fecha_creacion.desc()).all()
+    
     return recetas

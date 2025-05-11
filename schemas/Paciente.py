@@ -27,7 +27,7 @@ class Paciente(_PacienteBase):
 class PacienteUpdate(BaseModel):
     nombre: str | None = None
     fecha_nacimiento: date | None = None
-    tipo_sangre: date | None =  None
+    tipo_sangre: str | None =  None
     direccion: str | None = None
 
 class PacienteForRecepcionista(_PacienteBase): #datos de contacto y id

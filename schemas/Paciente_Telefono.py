@@ -5,7 +5,11 @@ class _Paciente_TelefonoBase(BaseModel):
     tipo: str
 
 class Paciente_TelefonoCreate(_Paciente_TelefonoBase):
-    idPaciente: int | None = None
+    pass
+
+class Paciente_TelefonoUpdate(BaseModel):
+    telefono: str | None = None
+    tipo: str | None = None
 
 class Paciente_Telefono(_Paciente_TelefonoBase):
     id: int

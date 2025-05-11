@@ -17,7 +17,7 @@ class CuentaRecepcionista(Base):
     hashed_password: Mapped[str] = mapped_column(String(100), nullable=False)
     nombre: Mapped[str] = mapped_column(String(100), nullable=False)
     correo: Mapped[str] = mapped_column(String(100), unique=True)
-    telefono: Mapped[str] = mapped_column(String(20))
+    telefono: Mapped[str] = mapped_column(String(20), nullable=True)
 
     #Citas creadas por el recepcionista
     Citas: Mapped[List["Cita"]] = relationship(back_populates="Recepcionista")

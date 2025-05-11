@@ -2,6 +2,7 @@ from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Optional
 from config.db import Base
+from datetime import datetime
 #from models import Cita
 from typing import TYPE_CHECKING
 
@@ -22,6 +23,9 @@ class Receta(Base):
     saturacion_oxigeno: Mapped[Optional[str]] = mapped_column(String(10) ,nullable=True)
     presion_arterial: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     temperatura: Mapped[Optional[float]] = mapped_column(nullable=True)
+
+    #nuevo campo obligatorio
+    fecha_creacion: Mapped[datetime] = mapped_column(nullable=False ,default=datetime.now())
 
     #obligatorio
     tratamiento: Mapped[str] = mapped_column(String(500), nullable=False)

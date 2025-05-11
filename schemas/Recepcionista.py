@@ -4,9 +4,15 @@ class _RecepcionistaBase(BaseModel):
     #datos generales
     nombre: str
 
+class RecepcionistaUpdate(BaseModel):
+    nombre: str | None = None
+    correo: EmailStr | None = None
+    telefono: str | None = None
+    password: SecretStr | None = None
+
 class RecepcionistaCreate(_RecepcionistaBase): #datos de registro
     correo: EmailStr
-    telefono: str
+    telefono: str | None = None
     password: SecretStr
 
 class RecepcionistaSimple(_RecepcionistaBase):
@@ -17,6 +23,8 @@ class RecepcionistaSimple(_RecepcionistaBase):
 class Recepcionista(_RecepcionistaBase):
     idRecepcionista: int
     clave: str
+    correo: EmailStr
+    telefono: str | None = None
 
     model_config = {"from_attributes": True}
         

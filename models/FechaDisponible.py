@@ -15,13 +15,13 @@ class FechaDisponible(Base):
     idFecha: Mapped[int] = mapped_column(primary_key=True)
 
     #Clave foranea, define el medico que atiende (considerando que el sistema admita mas medicos en el futuro)
-    idAdmin: Mapped[int] = mapped_column(ForeignKey("CuentaAdmin.idAdmin"), nullable=True) 
+    idAdmin: Mapped[Optional[int]] = mapped_column(ForeignKey("CuentaAdmin.idAdmin"), nullable=True) 
 
     fecha: Mapped[datetime] = mapped_column(nullable=False)
     disponible: Mapped[int] = mapped_column(nullable=False)
 
-    seleccionado: Mapped[Optional[str]] = mapped_column(String(45), nullable=True)
-
+    seleccionado: Mapped[Optional[int]] = mapped_column(nullable=True)
+    #
     #relacion usada para el ORM
     Medico: Mapped["CuentaAdmin"] = relationship(back_populates="Fechas")
     Cita: Mapped["Cita"] = relationship(back_populates="Fecha", cascade="all, delete-orphan")

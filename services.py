@@ -19,8 +19,9 @@ def create_database():
     return Base.metadata.create_all(bind=engine)
 
 #metodos para obtener los registros de cuentapaciente
-async def get_paciente_by_email(correo: str,db: Session):
-    return db.query(CuentaPaciente).filter(CuentaPaciente.correo == correo).first()
+async def get_paciente_by_email(correo: str,db: Session) -> CuentaPaciente:
+    paciente = db.query(CuentaPaciente).filter(CuentaPaciente.correo == correo).first()
+    return paciente
 
 async def get_paciente_by_id(id: int, db: Session):
     return db.query(CuentaPaciente)\
@@ -215,3 +216,29 @@ def get_current_medico(db: Session = Depends(get_db), token: str = Depends(oauth
         raise HTTPException(status_code=404, detail="Médico no encontrado")
 
     return medico
+
+def get_current_paciente(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    try:
+        decoded = _jwt.decode(token, options={"verify_signature": False})
+        print(datetime.fromtimestamp(decoded["exp"]))
+        payload = _jwt.decode(token, JWT_SECRET, algorithms="HS256")
+        paciente_id: int = payload.get("sub")
+        role: str = payload.get("role")
+    except _jwt.ExpiredSignatureError:
+        print("token expirado")
+        raise HTTPException(status_code=401, detail="Token expirado")
+    except _jwt.InvalidTokenError:
+        print("token invalido")
+        raise HTTPException(status_code=401, detail="Token inválido")
+
+    if not role == "paciente":
+        print("El usuario no es un paciente")
+        raise HTTPException(status_code=401, detail="El usuario no es un paciente")
+
+    paciente = get_paciente_by_id(paciente_id, db)
+
+    if not paciente:
+        print("medico no encontrado en la BD")
+        raise HTTPException(status_code=404, detail="Médico no encontrado")
+
+    return paciente

@@ -11,6 +11,7 @@ from passlib.hash import bcrypt
 from datetime import datetime
 import services as _services
 from services import get_current_medico
+from services import get_current_paciente
 
 auth = APIRouter()
 
@@ -100,3 +101,32 @@ async def changePasswordMedico(passwords: MedicoUpdatePassword, db: Session = De
     db.commit()
     db.refresh(current_medico)
     return {"message": "Contraseña modificada con exito"}
+
+@auth.patch("/auth/change-password/paciente")
+async def changePasswordPaciente(passwords: PacienteUpdatePassword, current_paciente: CuentaPaciente = Depends(get_current_paciente),db: Session = Depends(get_db)):
+    if not current_paciente:
+        print("Paciente no encontrado")
+        raise HTTPException(status_code=401, detail="No autorizado para esta acción")
+    
+    if not current_paciente.verify_password(passwords.current_password):
+        print("Contraseña incorrecta")
+        raise HTTPException(status_code=401, detail="No autorizado")
+    
+    current_paciente.hashed_password = bcrypt.hash(passwords.new_password)
+
+    db.commit()
+    db.refresh(current_paciente)
+    return {"message": "Contraseña modificada con exito"}
+
+@auth.patch("/auth/recover-password/paciente")
+async def recoverPasswordPaciente(paciente_recover: PacienteRecoverPassword, db: Session = Depends(get_db)):
+    paciente_db = await _services.get_paciente_by_email(paciente_recover.correo, db)
+
+    if not paciente_db:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    
+    if paciente_db.nombre != paciente_recover.nombre:
+        raise HTTPException(status_code=401 ,detail="El nombre es incorrecto")
+    
+    paciente_db.hashed_password = bcrypt.hash(paciente_recover.new_password)
+    return {"message": "La contraseña se ha cambiado con exito"}

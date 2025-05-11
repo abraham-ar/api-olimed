@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 import jwt as _jwt
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException
+from config.db import get_db
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
@@ -181,25 +182,36 @@ async def authenticate_paciente(correo: str, password: str, db: Session):
 #metodo usado para crear el JWT
 async def create_token(data: dict):
     to_encode = data.copy()
-    expire = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE)
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE)
     to_encode.update({"exp": expire})
     token = _jwt.encode(to_encode, JWT_SECRET, algorithm="HS256")
 
     return dict(access_token = token, token_type="bearer")
 
 
-def get_current_medico(token: str = Depends(oauth2_scheme)):
+def get_current_medico(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     
     try:
+        decoded = _jwt.decode(token, options={"verify_signature": False})
+        print(datetime.fromtimestamp(decoded["exp"]))
         payload = _jwt.decode(token, JWT_SECRET, algorithms="HS256")
         medico_id: int = payload.get("sub")
+        role: str = payload.get("role")
     except _jwt.ExpiredSignatureError:
+        print("token expirado")
         raise HTTPException(status_code=401, detail="Token expirado")
     except _jwt.InvalidTokenError:
+        print("token invalido")
         raise HTTPException(status_code=401, detail="Token inválido")
 
-    medico = get_medico_by_id(medico_id)
+    if not role == "medico":
+        print("El usuario no es un medico")
+        raise HTTPException(status_code=401, detail="El usuario no es un medico")
+
+    medico = get_medico_by_id(medico_id, db)
+
     if medico is None:
+        print("medico no encontrado en la BD")
         raise HTTPException(status_code=404, detail="Médico no encontrado")
 
     return medico

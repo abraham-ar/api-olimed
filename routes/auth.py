@@ -88,9 +88,11 @@ async def loginPaciente(form_data: OAuth2PasswordRequestForm = Depends() ,db: Se
 @auth.patch("/auth/change-password/medico")
 async def changePasswordMedico(passwords: MedicoUpdatePassword, db: Session = Depends(get_db), current_medico: CuentaAdmin = Depends(get_current_medico)):
     if not current_medico:
+        print("Medico no encontrado")
         raise HTTPException(status_code=401, detail="No autorizado para esta acción")
     
     if not current_medico.verify_password(passwords.current_password):
+        print("Contraseña incorrecta")
         raise HTTPException(status_code=401, detail="No autorizado")
     
     current_medico.hashed_password = bcrypt.hash(passwords.new_password)

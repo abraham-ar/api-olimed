@@ -42,7 +42,7 @@ async def registerPaciente(paciente: PacienteCreate, db: Session = Depends(get_d
     db_paciente = await _services.get_paciente_by_email(paciente.correo, db)
 
     if db_paciente:
-        HTTPException(status_code=400, detail="Correo ya registrado")
+        raise HTTPException(status_code=400, detail="Correo ya registrado")
 
     paciente_obj = CuentaPaciente(
         correo = paciente.correo,
@@ -62,7 +62,7 @@ async def loginMedico(form_data: OAuth2PasswordRequestForm = Depends(), db: Sess
     medico = await _services.authenticate_medico(form_data.username, form_data.password, db)
 
     if not medico:
-        return HTTPException(status_code=401, detail="Credenciales del medico no validas")
+        raise HTTPException(status_code=401, detail="Credenciales del medico no validas")
     
     return await _services.create_token(data={"sub":medico.clave, "role": "medico"})
 
@@ -71,7 +71,7 @@ async def loginRecepcionista(form_data: OAuth2PasswordRequestForm = Depends() ,d
     recepcionista = await _services.authenticate_recepcionista(form_data.username, form_data.password, db)
 
     if not recepcionista:
-        return HTTPException(status_code=401, detail="Credenciales del recepcionista no validas")
+        raise HTTPException(status_code=401, detail="Credenciales del recepcionista no validas")
     
     return await _services.create_token(data={"sub": recepcionista.clave, "role": "recepcionista"})
 
@@ -80,6 +80,6 @@ async def loginPaciente(form_data: OAuth2PasswordRequestForm = Depends() ,db: Se
     paciente = await _services.authenticate_paciente(form_data.username, form_data.password, db)
 
     if not paciente:
-        return HTTPException(status_code=401, detail="Credenciales del paciente no validas")
+        raise HTTPException(status_code=401, detail="Credenciales del paciente no validas")
     
     return await _services.create_token(data={"sub": paciente.correo, "role": "paciente"})

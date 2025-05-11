@@ -6,7 +6,8 @@ import services
 
 # Configura los orígenes permitidos en este caso donde se se encuentra en front
 origins = [
-    "http://localhost:3000",
+    "http://localhost:3000",  # CRA
+    "http://localhost:5173",  # Vite
 ]
 
 services.create_database()

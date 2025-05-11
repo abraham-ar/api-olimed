@@ -15,15 +15,46 @@ function HomePage() {
 
   // Handle logout
   const handleLogout = () => {
-    // In a real app, you would clear authentication tokens/cookies here
+    localStorage.removeItem("userToken")
+    localStorage.removeItem("userRole")
+
+    // Redirect to login
     navigate("/login")
   }
+  
 
   // Handle account deletion
-  const handleDeleteAccount = () => {
-    // In a real app, you would show a confirmation dialog and then delete the account
-    alert("Esta función eliminaría tu cuenta después de confirmación.")
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm("¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.")
+  
+    if (!confirmed) return
+  
+    try {
+      const token = localStorage.getItem("userToken")
+      const userId = localStorage.getItem("userId")
+  
+      const response = await fetch(`http://localhost:8000/paciente/${userId}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
+  
+      if (!response.ok) {
+        throw new Error("Error al eliminar la cuenta")
+      }
+  
+      localStorage.removeItem("userToken")
+      localStorage.removeItem("userId")
+      localStorage.removeItem("userRole")
+      alert("Tu cuenta ha sido eliminada.")
+      navigate("/login")
+    } catch (error) {
+      console.error("Error:", error)
+      alert("Hubo un error al intentar eliminar la cuenta.")
+    }
   }
+  
 
   // Sample notification data
   const notifications = [

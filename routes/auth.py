@@ -108,11 +108,11 @@ async def changePasswordPaciente(passwords: PacienteUpdatePassword, current_paci
         print("Paciente no encontrado")
         raise HTTPException(status_code=401, detail="No autorizado para esta acción")
     
-    if not current_paciente.verify_password(passwords.current_password):
+    if not current_paciente.verify_password(passwords.current_password.get_secret_value()):
         print("Contraseña incorrecta")
         raise HTTPException(status_code=401, detail="No autorizado")
     
-    current_paciente.hashed_password = bcrypt.hash(passwords.new_password)
+    current_paciente.hashed_password = bcrypt.hash(passwords.new_password.get_secret_value())
 
     db.commit()
     db.refresh(current_paciente)
@@ -128,5 +128,5 @@ async def recoverPasswordPaciente(paciente_recover: PacienteRecoverPassword, db:
     if paciente_db.nombre != paciente_recover.nombre:
         raise HTTPException(status_code=401 ,detail="El nombre es incorrecto")
     
-    paciente_db.hashed_password = bcrypt.hash(paciente_recover.new_password)
+    paciente_db.hashed_password = bcrypt.hash(paciente_recover.new_password.get_secret_value())
     return {"message": "La contraseña se ha cambiado con exito"}

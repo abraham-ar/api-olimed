@@ -235,7 +235,7 @@ def get_current_paciente(db: Session = Depends(get_db), token: str = Depends(oau
         print("El usuario no es un paciente")
         raise HTTPException(status_code=401, detail="El usuario no es un paciente")
 
-    paciente = get_paciente_by_id(paciente_id, db)
+    paciente = db.query(CuentaPaciente).filter(CuentaPaciente.idPaciente == paciente_id).first()
 
     if not paciente:
         print("medico no encontrado en la BD")

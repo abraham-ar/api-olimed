@@ -19,6 +19,7 @@ class Paciente(_PacienteBase):
     tipo_sangre: str | None = None
     Alergias: List[Alergia] = []
     direccion: str | None = None
+    fecha_nacimiento: date
     Telefonos: List[Paciente_Telefono] = []
 
     model_config = {"from_attributes": True}

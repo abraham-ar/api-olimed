@@ -54,7 +54,7 @@ async def deleteMedico(id_medico: int, db: Session = Depends(get_db)):
     return {"message": "Medico eliminado"}
 
 #obtiene las notificaciones del medico
-medicos.get("/medicos/{id_medico}/notificaciones", response_model=List[Notificacion_Admin])
+@medicos.get("/medicos/{id_medico}/notificaciones", response_model=List[Notificacion_Admin])
 async def getNotificaciones(id_medico: int, db: Session = Depends(get_db)):
     medico_db = _services.get_medico_by_id(id_medico, db)
 

@@ -170,7 +170,7 @@ async def eliminaAlergia(id_paciente: int, id_alergia: int, db: Session = Depend
     return {"message":"Alergia eliminada"}
 
 #obtener notificaciones de paciente
-pacientes.get("/paciente/{id_paciente}/notificaciones", response_model=List[Notificacion_Paciente])
+@pacientes.get("/paciente/{id_paciente}/notificaciones", response_model=List[Notificacion_Paciente])
 async def getNotificacion(id_paciente: int, db: Session = Depends(get_db)):
     paciente_db = _services.get_paciente_by_id(id_paciente, db)
 

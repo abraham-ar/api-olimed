@@ -63,9 +63,13 @@ async def addCita(cita: CitaCreate, db: Session = Depends(get_db)):
 
     #creación e inicialización del objeto cita
     cita_obj = Cita_db()
-    for key, value in cita.dict(exclude_unset=True).items():
-        setattr(cita_obj, key, value)
+    
+    data  = cita.dict(exclude_unset=True)
+    data.pop("Sintomas")
 
+    for key, value in data.items():
+        setattr(cita_obj, key, value)
+    print("Lllega hasta esta linea")
     #creacion del registro en la bd
     db.add(cita_obj)
     db.commit()
@@ -91,7 +95,7 @@ async def addCita(cita: CitaCreate, db: Session = Depends(get_db)):
     #creación de la notificación para administrador
     notificacion_admin = Notificacion_AdminCreate(
         titulo="Nueva cita agendada",
-        mensaje = f"El paciente {paciente_db.nombre} ha agendado una cita para el dia {fecha_db.fecha.date()} a las {fecha_db.fecha.time()} revisa los detalles en la sección de Citas",
+        mensaje = f"El paciente {paciente_db.nombre} ha agendado una cita para el dia {fecha_db.fecha.date()} a las {fecha_db.fecha.time()}.",
         tipo="Sistema",
         fecha_creacion=datetime.now()
     )

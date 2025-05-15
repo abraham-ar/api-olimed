@@ -16,9 +16,9 @@ class FechaDisponibleUpdate(BaseModel):
     seleccionado: int | None = None
 
 
-class FechaDisponible(_FechaDisponibleBase):
+class FechaDisponible(BaseModel):
     idFecha: int
-    idAdmin: int | None = None
-    seleccionado: int | None = None
+    fecha: datetime
+    disponible: int | None = None
 
     model_config = {"from_attributes": True}

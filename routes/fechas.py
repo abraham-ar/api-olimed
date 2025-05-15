@@ -5,7 +5,7 @@ import services as _services
 from schemas.FechaDisponible import FechaDisponibleCreate, FechaDisponible, FechaDisponibleUpdate
 from models import FechaDisponible as Fecha_db
 from typing import List
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from schemas.Notificacion_Admin import Notificacion_AdminCreate
 from schemas.Notificacion_Paciente import Notificacion_PacienteCreate
 
@@ -31,17 +31,12 @@ async def createFechaDispnible(fechaNueva: FechaDisponibleCreate, db: Session = 
     db.refresh(fecha_obj)
     return fecha_obj
 
-#Obtiene todos las fechas disponiles para citas (puede devolver valores por defecto)
+#obtiene las horas disponibles para cita de acuerdo al dia enviado
 @fechas.get("/fechasDisponibles", response_model=List[FechaDisponible])
-async def getFechasDisponibles(inicio: datetime = Query(None), fin: datetime = Query(None), db: Session = Depends(get_db)):
-    if not inicio:
-        inicio = datetime.now()
+async def getFechasDisponiblesByDia(fecha: date, db: Session = Depends(get_db)):
+    horario = _services.get_horario_by_dia(fecha, db)
 
-    if not fin:
-        fin = inicio + timedelta(days=7)
-
-    fechasDisponibles = _services.get_fechasDisponibles(inicio, fin, db)
-    return fechasDisponibles
+    return horario
 
 #modifica una fechaDisponible
 @fechas.put("/fechaDisponible/{id_fecha}", response_model=FechaDisponible)

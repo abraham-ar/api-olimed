@@ -4,11 +4,12 @@ from models import CuentaAdmin, CuentaRecepcionista, CuentaPaciente, Alergia , P
 from schemas.Paciente import Paciente
 from schemas.Notificacion_Paciente import Notificacion_PacienteCreate
 from schemas.Notificacion_Admin import Notificacion_AdminCreate
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import jwt as _jwt
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException
 from config.db import get_db
+from sqlalchemy import func
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
@@ -80,6 +81,9 @@ def get_fechasDisponibles(inicio: datetime, fin: datetime, db: Session):
                                             FechaDisponible.fecha <= fin, 
                                             FechaDisponible.disponible == 1,
                                             FechaDisponible.seleccionado == 0).order_by(FechaDisponible.fecha).all()
+
+def get_horario_by_dia(fecha: date, db: Session):
+    return db.query(FechaDisponible).filter(func.date(FechaDisponible.fecha) == fecha).order_by(FechaDisponible.fecha).all()
 
 def get_fechaDisponible_by_fecha(fecha: datetime, db: Session):
     return db.query(FechaDisponible).filter(FechaDisponible.fecha == fecha).first()

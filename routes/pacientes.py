@@ -172,7 +172,7 @@ async def eliminaAlergia(id_paciente: int, id_alergia: int, db: Session = Depend
 #obtener notificaciones de paciente
 @pacientes.get("/paciente/{id_paciente}/notificaciones", response_model=List[Notificacion_Paciente])
 async def getNotificacion(id_paciente: int, db: Session = Depends(get_db)):
-    paciente_db = _services.get_paciente_by_id(id_paciente, db)
+    paciente_db = await _services.get_paciente_by_id(id_paciente, db)
 
     if not paciente_db:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
@@ -184,7 +184,7 @@ async def getNotificacion(id_paciente: int, db: Session = Depends(get_db)):
 @pacientes.get("/pacientes/{id_paciente}/citas", response_model=List[Cita])
 async def getCitasProximas(id_paciente: int, db: Session = Depends(get_db)):
 
-    paciente_db = _services.get_paciente_by_id(id_paciente, db)
+    paciente_db = await _services.get_paciente_by_id(id_paciente, db)
 
     if not paciente_db:
         raise HTTPException(status_code=404, detail="Paciente no registrado")
@@ -209,7 +209,7 @@ async def getCitasProximas(id_paciente: int, db: Session = Depends(get_db)):
 #obtiene todas las recetas de un paciente
 @pacientes.get("/paciente/{id_paciente}/recetas", response_model=List[Receta])
 async def obtenerRecetas(id_paciente: int, db: Session = Depends(get_db)):
-    paciente_db = _services.get_paciente_by_id(id_paciente, db)
+    paciente_db = await _services.get_paciente_by_id(id_paciente, db)
 
     if not paciente_db:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")

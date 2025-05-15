@@ -4,7 +4,7 @@ class _Cita_SintomaBase(BaseModel):
     sintoma: str
 
 class Cita_SintomaCreate(_Cita_SintomaBase):
-    idCita: int
+    pass
 
 
 class Cita_Sintoma(_Cita_SintomaBase):

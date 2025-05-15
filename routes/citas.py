@@ -73,11 +73,12 @@ async def addCita(cita: CitaCreate, db: Session = Depends(get_db)):
     #creacion del registro en la bd
     db.add(cita_obj)
     db.commit()
+    db.refresh(cita_obj)
 
     #creación de los sintomas asociados a la cita
     for sintoma in sintomas:
         sintoma_obj = Cita_Sintoma(
-            idCita = sintoma.idCita,
+            idCita = cita_obj.idCita,
             sintoma = sintoma.sintoma
         )
         db.add(sintoma_obj)

@@ -191,7 +191,7 @@ async def getCitasProximas(id_paciente: int, db: Session = Depends(get_db)):
 
     citas = _services.get_citas_proximas_by_paciente(id_paciente ,db)
     
-    citas_resultado = List[Cita]
+    citas_resultado : List[Cita] = []
     for cita in citas:
         citas_resultado.append(
             Cita(

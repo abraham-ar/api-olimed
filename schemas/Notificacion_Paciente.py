@@ -14,6 +14,6 @@ class Notificacion_Paciente(_Notificacion_PacienteBase):
     idNotificacion: int
     idPaciente: int
     tipoNotificacion: str | None = None
-    fechaCreacion: datetime
+    fecha_creacion: datetime
 
     model_config = {"from_attributes": True}

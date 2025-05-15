@@ -129,4 +129,5 @@ async def recoverPasswordPaciente(paciente_recover: PacienteRecoverPassword, db:
         raise HTTPException(status_code=401 ,detail="El nombre es incorrecto")
     
     paciente_db.hashed_password = bcrypt.hash(paciente_recover.new_password.get_secret_value())
+    db.commit()
     return {"message": "La contraseña se ha cambiado con exito"}

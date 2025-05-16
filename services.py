@@ -85,6 +85,10 @@ def get_fechasDisponibles(inicio: datetime, fin: datetime, db: Session):
 def get_horario_by_dia(fecha: date, db: Session):
     return db.query(FechaDisponible).filter(func.date(FechaDisponible.fecha) == fecha).order_by(FechaDisponible.fecha).all()
 
+def get_fechas_by_rango(inicio: datetime, fin: datetime, db:Session):
+    return db.query(FechaDisponible).filter(FechaDisponible.fecha >= inicio, FechaDisponible.fecha <= fin).all()
+
+
 def get_fechaDisponible_by_fecha(fecha: datetime, db: Session):
     return db.query(FechaDisponible).filter(FechaDisponible.fecha == fecha).first()
 
@@ -106,6 +110,9 @@ def get_citas(db: Session):
 
 def get_citas_activas(fecha: datetime ,db: Session):
     return db.query(Cita).join(Cita.Fecha).options(joinedload(Cita.Fecha)).filter(Cita.estado == 1, FechaDisponible.fecha >= fecha).order_by(FechaDisponible.fecha).all()
+
+def get_citas_by_rango(inicio: datetime, fin: datetime, db:Session):
+    return db.query(Cita).join(Cita.Fecha).options(joinedload(Cita.Fecha)).filter(FechaDisponible.fecha >= inicio, FechaDisponible.fecha <= fin).all()
 
 #metodos para recetas
 def get_receta_by_id(id: int, db: Session):

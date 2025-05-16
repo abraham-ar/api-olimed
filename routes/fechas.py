@@ -53,31 +53,84 @@ async def modificaFecha(id_fecha: int, fecha_update: FechaDisponibleUpdate, db: 
     db.refresh(fecha_db)
     return fecha_db
 
-#modifica la disponibilidad de un rango de fechas (es decir, las oculta o las muestre como activas)
+#bloquea o desbloquea un rango de dias
 @fechas.patch("/fechasDisponibles")
-async def changeDisponible(inicio: datetime, fin: datetime, disponible: int, db: Session = Depends(get_db)):
-    fechas = _services.get_fechasDisponibles(inicio, fin, db)
+async def changeBloqueado(inicio: datetime, fin: datetime, bloqueado: int, db: Session = Depends(get_db)):
+    fechas = _services.get_fechas_by_rango(inicio, fin, db)
 
+    mensaje = ""
+
+    if bloqueado == 1:
+        #verificar que los dias a bloquear no esten dentro del rango de dias ya bloqueados
+        dias_bloqueados = _services.get_dias_bloqueados(db)
+
+        fecha_inicio = inicio.date()
+        fecha_fin = fin.date()
+
+        fechas_a_bloquear = []
+
+        current = fecha_inicio
+        while current <= fecha_fin:
+            fechas_a_bloquear.append(current)
+            current += timedelta(days=1)
+
+        for dia in dias_bloqueados:
+            if dia in fechas_a_bloquear:
+                raise HTTPException(status_code=401, detail="El rango de dias a bloquear contiene dia(s) ya bloqueado(s)")
+
+        #falta programar logica de verificar las citas asignadas a estos dias
+        citas = _services.get_citas_by_rango(inicio, fin, db)
+
+        for cita in citas:
+            notificacion = Notificacion_PacienteCreate(
+                titulo="Cita eliminada debido a que ese dia no habra servicio",
+                mensaje= f"Debido a que la Fecha disponible para el dia {cita.Fecha.fecha.date()} a las {cita.Fecha.fecha.time()} fue bloqueada, tu cita para dicho día fue eliminada",
+                idPaciente=cita.idPaciente,
+                fecnaCreacion=datetime.now(),
+                tipoNotificacion="Sistema"
+            )
+            _services.create_notificacion_paciente(notificacion, db)
+
+            #creación de la notificación para administrador
+            notificacion_admin = Notificacion_AdminCreate(
+                titulo="Cita cancelada por bloquea de fechas",
+                mensaje = f"Debido a que bloqueaste el dia {cita.Fecha.fecha.date()}, la cita con el paciente {cita.Paciente.nombre} fue eliminada",
+                tipo="Sistema",
+                fecha_creacion=datetime.now()
+            )
+
+            _services.create_notificacion_medico(notificacion_admin, db)
+
+            db.delete(cita)
+
+        mensaje = "Dias bloqueados con exito"
+        
+    else:
+        mensaje = "Dias desbloqueados con exito"
+    
     for fecha in fechas:
-        fecha.disponible = disponible
+        print("Bloqueando dias")
+        fecha.bloqueado = bloqueado
     
     db.commit()
-    return {"message": "Disponibilidad de fechas actualizadas"}
+    return {"message": mensaje}
 
 
-#este endpoint cambia el estado de la seleccionado a 0 o 1 segun sea el caso, esto con el fin de marcar como seleccionado una fecha
-#cuando un paciente la seleccione para una cita, o desmarcarla si cancela la creación de la cita
+#este endpoint marca como disponible o no disponible una fecha
 @fechas.patch("/fechaDisponible/{id_fecha}")
-async def changeSeleccionado(id_fecha: int, seleccionado: int, db: Session = Depends(get_db)):
+async def changeSeleccionado(id_fecha: int, disponible: int, db: Session = Depends(get_db)):
     
     fecha_db = _services.get_fechaDisponible_by_id(id_fecha, db)
 
     if not fecha_db:
         raise HTTPException(status_code=404, detail="Ninguna fecha coincide con dicho id")
     
-    fecha_db.seleccionado = seleccionado
+    if fecha_db.disponible == 0 and disponible == 0:
+        raise HTTPException(status_code=401, detail="La fecha ya fue seleccionada por otra persona")
+
+    fecha_db.disponible = disponible
     db.commit()
-    return {"message": "Campo seleccionado actualizado"}
+    return {"message": "Disponibilidad de la fecha actualizada"}
 
 #elimina una fecha
 @fechas.delete("/fechaDisponible/{id_fecha}")

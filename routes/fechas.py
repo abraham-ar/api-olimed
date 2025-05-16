@@ -22,7 +22,7 @@ async def createFechaDispnible(fechaNueva: FechaDisponibleCreate, db: Session = 
     fecha_obj = Fecha_db(
         fecha = fechaNueva.fecha,
         disponible = fechaNueva.disponible,
-        seleccionado = fechaNueva.seleccionado        
+        bloqueado = fechaNueva.bloqueado
     )
 
     db.add(fecha_obj)

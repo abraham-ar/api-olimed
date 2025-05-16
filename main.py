@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends
-from routes import auth, pacientes, medicos, recepcionistas, fechas, citas, recetas
+from routes import auth, pacientes, medicos, recepcionistas, fechas, citas, recetas, diasBloqueados
 from config.db import Base, engine, SessionLocal
 from sqlalchemy.orm import Session
 from models import CuentaAdmin
@@ -53,3 +53,4 @@ app.include_router(recepcionistas)
 app.include_router(fechas)
 app.include_router(recetas)
 app.include_router(citas)
+app.include_router(diasBloqueados)

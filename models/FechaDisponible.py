@@ -19,8 +19,8 @@ class FechaDisponible(Base):
 
     fecha: Mapped[datetime] = mapped_column(nullable=False)
     disponible: Mapped[int] = mapped_column(nullable=False)
-
-    seleccionado: Mapped[Optional[int]] = mapped_column(nullable=True)
+    #usado para bloquear por dias
+    bloqueado: Mapped[Optional[int]] = mapped_column(nullable=True)
     #
     #relacion usada para el ORM
     Medico: Mapped["CuentaAdmin"] = relationship(back_populates="Fechas")

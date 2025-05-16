@@ -7,18 +7,19 @@ class _FechaDisponibleBase(BaseModel):
 
 class FechaDisponibleCreate(_FechaDisponibleBase):
     idAdmin: int | None = None
-    seleccionado: int | None = None
+    bloqueado: int
 
 class FechaDisponibleUpdate(BaseModel):
     fecha: datetime | None = None
     disponible: int | None = None
     idAdmin: int | None = None
-    seleccionado: int | None = None
+    bloqueado: int | None = None
 
 
 class FechaDisponible(BaseModel):
     idFecha: int
     fecha: datetime
     disponible: int | None = None
+    bloqueado: int | None = None
 
     model_config = {"from_attributes": True}

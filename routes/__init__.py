@@ -5,3 +5,4 @@ from .recepcionistas import recepcionistas
 from .fechas import fechas
 from .recetas import recetas
 from .citas import citas
+from .diasBloqueados import diasBloqueados

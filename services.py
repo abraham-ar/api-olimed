@@ -80,7 +80,7 @@ def get_fechasDisponibles(inicio: datetime, fin: datetime, db: Session):
     return db.query(FechaDisponible).filter(FechaDisponible.fecha >= inicio,
                                             FechaDisponible.fecha <= fin, 
                                             FechaDisponible.disponible == 1,
-                                            FechaDisponible.seleccionado == 0).order_by(FechaDisponible.fecha).all()
+                                            FechaDisponible.bloqueado == 0).order_by(FechaDisponible.fecha).all()
 
 def get_horario_by_dia(fecha: date, db: Session):
     return db.query(FechaDisponible).filter(func.date(FechaDisponible.fecha) == fecha).order_by(FechaDisponible.fecha).all()
@@ -91,6 +91,11 @@ def get_fechaDisponible_by_fecha(fecha: datetime, db: Session):
 def get_fechaDisponible_by_id(id: int, db: Session):
     return db.query(FechaDisponible).filter(FechaDisponible.idFecha == id).first()
 
+#obtener dias bloqueados
+def get_dias_bloqueados(db: Session):
+    fechas_bloqueadas = db.query(FechaDisponible.fecha).filter(FechaDisponible.bloqueado == 1).all()
+
+    return {f.fecha.date() for f in fechas_bloqueadas}
 
 #metodos para Citas
 def get_cita_by_id(id: int, db: Session):

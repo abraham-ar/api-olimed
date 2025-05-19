@@ -57,7 +57,6 @@ async def modificaFecha(id_fecha: int, fecha_update: FechaDisponibleUpdate, db: 
 @fechas.patch("/fechasDisponibles")
 async def changeBloqueado(inicio: datetime, fin: datetime, bloqueado: int, db: Session = Depends(get_db)):
     fechas = _services.get_fechas_by_rango(inicio, fin, db)
-
     mensaje = ""
 
     if bloqueado == 1:
@@ -107,9 +106,7 @@ async def changeBloqueado(inicio: datetime, fin: datetime, bloqueado: int, db: S
         
     else:
         mensaje = "Dias desbloqueados con exito"
-    
     for fecha in fechas:
-        print("Bloqueando dias")
         fecha.bloqueado = bloqueado
     
     db.commit()

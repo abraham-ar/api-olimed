@@ -96,6 +96,7 @@ async def addCita(cita: CitaCreate, db: Session = Depends(get_db)):
     #creación de la notificación para administrador
     notificacion_admin = Notificacion_AdminCreate(
         titulo="Nueva cita agendada",
+        idAdmin=1,
         mensaje = f"El paciente {paciente_db.nombre} ha agendado una cita para el dia {fecha_db.fecha.date()} a las {fecha_db.fecha.time()}.",
         tipo="Sistema",
         fecha_creacion=datetime.now()

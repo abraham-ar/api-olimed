@@ -24,7 +24,7 @@ class RecetaUpdate(BaseModel):
 
 class RecetaCreate(_RecetaBase):
     idCita: int
-    fecha_creacion: datetime = Field(default_factory=datetime.now())    
+    fecha_creacion: datetime = Field(default_factory=datetime.now)    
 
 class Receta(_RecetaBase):
     idReceta: int

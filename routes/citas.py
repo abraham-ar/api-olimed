@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session, selectinload
 from config.db import get_db
 import services as _services
 from schemas.Cita import CitaCreate, Cita
+from schemas.Cita_Sintoma import Cita_SintomaCreate
+from schemas import Cita_Sintoma as Cita_SintomaSchema
 from models import Cita as Cita_db
 from models import Cita_Sintoma
 from datetime import datetime, date
@@ -21,8 +23,9 @@ async def getCitas(actuales: int, db: Session = Depends(get_db)):
     else:
         fecha_actual = datetime.now()
         citas = _services.get_citas_activas(fecha_actual ,db)
+    print(len(citas))
 
-    citas_resultado = List[Cita]
+    citas_resultado = []
     for cita in citas:
         citas_resultado.append(
             Cita(
@@ -40,11 +43,14 @@ async def getCitas(actuales: int, db: Session = Depends(get_db)):
 #creación de citas
 @citas.post("/citas")
 async def addCita(cita: CitaCreate, db: Session = Depends(get_db)):
-
+    print("Check 1")
     #comprueba que la fechaDisponible exista
     fecha_db = _services.get_fechaDisponible_by_id(cita.idFecha, db)
     if not fecha_db:
         raise HTTPException(status_code=404, detail="Fecha no encontrada")
+    
+    if fecha_db.disponible == 0:
+        raise HTTPException(status_code=400, detail="La fecha ya no está disponible")
     
     #modificar el estado de la fecha para marcarla como no disponible
     fecha_db.disponible = 0
@@ -53,7 +59,7 @@ async def addCita(cita: CitaCreate, db: Session = Depends(get_db)):
     #comprueba la existencia del paciente
     paciente_db = _services.get_pacienteSimple_by_id(cita.idPaciente, db)
     if not paciente_db:
-        return HTTPException(status_code=404, detail="Paciente no encontrado")
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
 
     #obtenemos los sintomas ya que se crearan registros en otra tabla
     sintomas = cita.Sintomas
@@ -144,3 +150,31 @@ async def deleteCita(id_cita: int, db: Session = Depends(get_db)):
     db.delete(cita_db)
     db.commit()
     return {"message": "Cita eliminada"}
+
+@citas.get("/citas/{id_cita}/sintomas", response_model=List[Cita_SintomaSchema])
+async def get_sintomas_de_cita(id_cita: int, db: Session = Depends(get_db)):
+    cita = db.query(Cita).filter(Cita.idCita == id_cita).first()
+    if not cita:
+        raise HTTPException(status_code=404, detail="Cita no encontrada")
+    
+    return cita.Sintomas
+
+@citas.post("/citas/{id_cita}/sintomas", response_model=Cita_SintomaSchema)
+async def addSintomaToCita(id_cita: int, sintoma: Cita_SintomaCreate, db: Session = Depends(get_db)):
+
+    # Verifica si la cita existe
+    cita_db = _services.get_cita_by_id(id_cita, db)
+    if not cita_db:
+        raise HTTPException(status_code=404, detail="Cita no encontrada")
+
+    # Crea el nuevo síntoma vinculado a la cita
+    nuevo_sintoma = Cita_Sintoma(
+        idCita=id_cita,
+        sintoma=sintoma.sintoma
+    )
+
+    db.add(nuevo_sintoma)
+    db.commit()
+    db.refresh(nuevo_sintoma)
+
+    return nuevo_sintoma

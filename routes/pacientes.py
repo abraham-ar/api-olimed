@@ -4,7 +4,7 @@ from config.db import get_db
 import services as _services
 from schemas.Paciente import PacienteForRecepcionista, Paciente, PacienteUpdate
 from schemas.Paciente_Telefono import Paciente_TelefonoCreate, Paciente_TelefonoUpdate
-from schemas.Alergia import AlergiaCreate, AlergiaUpdate
+from schemas.Alergia import AlergiaCreate, AlergiaUpdate, Alergia
 from schemas.Notificacion_Paciente import Notificacion_Paciente
 from typing import List
 from models import Paciente_Telefono as Telefono_db, Notificacion_Paciente as Notificacion_db
@@ -15,7 +15,7 @@ from schemas.Cita import Cita
 pacientes = APIRouter()
 
 #Obtiene todos los pacientes
-@pacientes.get("/pacientes", response_model=List[PacienteForRecepcionista])
+@pacientes.get("/pacientes", response_model=List[Paciente])
 async def getPacientes(limit: int = 10, skip: int = 0, db: Session = Depends(get_db)):
     pacientes = await _services.get_pacientes(limit=limit, skip=skip, db=db)
     return pacientes
@@ -114,6 +114,13 @@ async def eliminaTelefono(id_paciente: int, id_telefono: int, db: Session = Depe
     db.commit()
     return {"message": "Telefono eliminado"}
 
+
+@pacientes.get("/paciente/{id}/alergias", response_model=List[Alergia])
+async def getAlergias(id: int, db: Session = Depends(get_db)):
+    paciente = await _services.get_paciente_by_id(id, db)
+    if not paciente:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    return paciente.Alergias
 
 #agrega una alergia para un paciente
 @pacientes.post("/paciente/{id_paciente}/alergia")

@@ -8,7 +8,7 @@ from models import Receta as Receta_db
 recetas = APIRouter()
 
 #Guarda una receta
-recetas.post("/receta")
+@recetas.post("/receta")
 async def addReceta(receta: RecetaCreate, db: Session = Depends(get_db)):
     cita_db = _services.get_cita_by_id(receta.idCita, db)
 

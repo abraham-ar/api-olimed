@@ -27,7 +27,7 @@ class RecetaCreate(_RecetaBase):
     fecha_creacion: datetime = Field(default_factory=datetime.now)    
 
 class Receta(_RecetaBase):
-    idReceta: int
+    #idReceta: int
     idCita: int
     fecha_creacion: datetime
 

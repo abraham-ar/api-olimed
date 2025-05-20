@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from routes import auth, pacientes, medicos, recepcionistas, fechas, citas, recetas, diasBloqueados
 from config.db import Base, engine, SessionLocal
 from sqlalchemy.orm import Session
-from models import CuentaAdmin
+from models import CuentaAdmin, CuentaRecepcionista
 from fastapi.middleware.cors import CORSMiddleware
 import services
 from passlib.hash import bcrypt
@@ -24,6 +24,26 @@ def crear_usuario_principal():
             logging.info("Administrador principal creado.")
         else:
             logging.info("Administrador principal ya existe.")
+    finally:
+        db.close()
+
+def crear_recepcionista_principal():
+    db: Session = SessionLocal()
+    try:
+        recep = db.query(CuentaRecepcionista).filter(CuentaRecepcionista.clave == "252001").first()
+        if not recep:
+            nuevo_recep = CuentaRecepcionista(
+                nombre="Aranza",
+                clave="252001",
+                correo="aranza@gmail.com",
+                telefono="8090000000",
+                hashed_password=bcrypt.hash("Aranza_123")
+            )
+            db.add(nuevo_recep)
+            db.commit()
+            logging.info("Recepcionista principal creado.")
+        else:
+            logging.info("Recepcionista principal ya existe.")
     finally:
         db.close()
 
